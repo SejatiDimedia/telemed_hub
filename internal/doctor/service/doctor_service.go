@@ -9,6 +9,7 @@ import (
 
 	"github.com/timurdianradhasejati/telemed_hub/internal/doctor/dto"
 	"github.com/timurdianradhasejati/telemed_hub/internal/doctor/mapper"
+	"github.com/timurdianradhasejati/telemed_hub/internal/doctor/model"
 	"github.com/timurdianradhasejati/telemed_hub/internal/doctor/repository"
 	"github.com/timurdianradhasejati/telemed_hub/internal/doctor/validator"
 	"github.com/timurdianradhasejati/telemed_hub/internal/shared"
@@ -111,4 +112,83 @@ func (s *DoctorServiceImpl) ListDoctors(ctx context.Context, specialty *string, 
 	}
 
 	return mapper.ToResponseList(doctors), totalItems, nil
+}
+
+func (s *DoctorServiceImpl) AddAvailability(ctx context.Context, doctorUserID uuid.UUID, req dto.CreateAvailabilityRequest) (*dto.AvailabilityResponse, error) {
+	// 1. Get Doctor profile
+	doctor, err := s.repo.GetByUserID(ctx, doctorUserID)
+	if err != nil {
+		return nil, err
+	}
+
+	// 2. Validate input and parse times
+	startTime, endTime, err := validator.ValidateCreateAvailability(req)
+	if err != nil {
+		return nil, err
+	}
+
+	// 3. Check for overlapping slot
+	overlapping, err := s.repo.CheckOverlappingSlot(ctx, doctor.ID, startTime, endTime)
+	if err != nil {
+		return nil, err
+	}
+	if overlapping {
+		return nil, ErrOverlappingSlot
+	}
+
+	// 4. Save slot
+	slot := &model.Availability{
+		DoctorID:  doctor.ID,
+		StartTime: startTime,
+		EndTime:   endTime,
+		IsBooked:  false,
+	}
+
+	err = s.repo.CreateAvailability(ctx, slot)
+	if err != nil {
+		return nil, err
+	}
+
+	return mapper.ToAvailabilityResponse(slot), nil
+}
+
+func (s *DoctorServiceImpl) RemoveAvailability(ctx context.Context, doctorUserID uuid.UUID, slotID uuid.UUID) error {
+	// 1. Get Doctor profile
+	doctor, err := s.repo.GetByUserID(ctx, doctorUserID)
+	if err != nil {
+		return err
+	}
+
+	// 2. Perform deletion (repo checks ownership and booking status)
+	return s.repo.DeleteAvailability(ctx, doctor.ID, slotID)
+}
+
+func (s *DoctorServiceImpl) GetAvailability(ctx context.Context, doctorID uuid.UUID, startTimeStr, endTimeStr string, isBooked *bool) ([]*dto.AvailabilityResponse, error) {
+	var startTime, endTime time.Time
+	var err error
+
+	if startTimeStr == "" {
+		startTime = time.Now().UTC()
+	} else {
+		startTime, err = time.Parse(time.RFC3339, startTimeStr)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if endTimeStr == "" {
+		endTime = startTime.Add(7 * 24 * time.Hour)
+	} else {
+		endTime, err = time.Parse(time.RFC3339, endTimeStr)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	slots, err := s.repo.ListAvailability(ctx, doctorID, startTime, endTime, isBooked)
+	if err != nil {
+		return nil, err
+	}
+
+	return mapper.ToAvailabilityResponseList(slots), nil
 }

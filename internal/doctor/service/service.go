@@ -2,9 +2,14 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/google/uuid"
 	"github.com/timurdianradhasejati/telemed_hub/internal/doctor/dto"
+)
+
+var (
+	ErrOverlappingSlot = errors.New("availability slot overlaps with an existing slot")
 )
 
 // DoctorService defines doctor use cases.
@@ -14,4 +19,8 @@ type DoctorService interface {
 	UpdateProfile(ctx context.Context, userID uuid.UUID, req dto.UpdateDoctorRequest) (*dto.DoctorResponse, error)
 	VerifyDoctor(ctx context.Context, adminUserID uuid.UUID, doctorID uuid.UUID, ipAddress string, userAgent string) error
 	ListDoctors(ctx context.Context, specialty *string, onlyVerified bool, sortBy string, order string, page int, limit int) ([]*dto.DoctorResponse, int, error)
+
+	AddAvailability(ctx context.Context, doctorUserID uuid.UUID, req dto.CreateAvailabilityRequest) (*dto.AvailabilityResponse, error)
+	RemoveAvailability(ctx context.Context, doctorUserID uuid.UUID, slotID uuid.UUID) error
+	GetAvailability(ctx context.Context, doctorID uuid.UUID, startTimeStr, endTimeStr string, isBooked *bool) ([]*dto.AvailabilityResponse, error)
 }

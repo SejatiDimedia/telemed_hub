@@ -1,6 +1,8 @@
 package mapper
 
 import (
+	"time"
+
 	"github.com/timurdianradhasejati/telemed_hub/internal/doctor/dto"
 	"github.com/timurdianradhasejati/telemed_hub/internal/doctor/model"
 )
@@ -29,6 +31,30 @@ func ToResponseList(doctors []*model.Doctor) []*dto.DoctorResponse {
 	resp := make([]*dto.DoctorResponse, len(doctors))
 	for i, d := range doctors {
 		resp[i] = ToResponse(d)
+	}
+	return resp
+}
+
+// ToAvailabilityResponse maps an Availability model to AvailabilityResponse DTO.
+func ToAvailabilityResponse(avail *model.Availability) *dto.AvailabilityResponse {
+	if avail == nil {
+		return nil
+	}
+
+	return &dto.AvailabilityResponse{
+		ID:        avail.ID.String(),
+		DoctorID:  avail.DoctorID.String(),
+		StartTime: avail.StartTime.Format(time.RFC3339),
+		EndTime:   avail.EndTime.Format(time.RFC3339),
+		IsBooked:  avail.IsBooked,
+	}
+}
+
+// ToAvailabilityResponseList maps a slice of Availability models to a slice of AvailabilityResponse DTOs.
+func ToAvailabilityResponseList(avails []*model.Availability) []*dto.AvailabilityResponse {
+	resp := make([]*dto.AvailabilityResponse, len(avails))
+	for i, a := range avails {
+		resp[i] = ToAvailabilityResponse(a)
 	}
 	return resp
 }

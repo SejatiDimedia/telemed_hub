@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -52,6 +53,37 @@ func (m *MockDoctorRepository) List(ctx context.Context, specialty *string, only
 		return nil, 0, args.Error(2)
 	}
 	return args.Get(0).([]*model.Doctor), args.Int(1), args.Error(2)
+}
+
+func (m *MockDoctorRepository) CreateAvailability(ctx context.Context, slot *model.Availability) error {
+	args := m.Called(ctx, slot)
+	return args.Error(0)
+}
+
+func (m *MockDoctorRepository) DeleteAvailability(ctx context.Context, doctorID uuid.UUID, slotID uuid.UUID) error {
+	args := m.Called(ctx, doctorID, slotID)
+	return args.Error(0)
+}
+
+func (m *MockDoctorRepository) GetAvailabilityByID(ctx context.Context, slotID uuid.UUID) (*model.Availability, error) {
+	args := m.Called(ctx, slotID)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*model.Availability), args.Error(1)
+}
+
+func (m *MockDoctorRepository) ListAvailability(ctx context.Context, doctorID uuid.UUID, startTime time.Time, endTime time.Time, isBooked *bool) ([]*model.Availability, error) {
+	args := m.Called(ctx, doctorID, startTime, endTime, isBooked)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*model.Availability), args.Error(1)
+}
+
+func (m *MockDoctorRepository) CheckOverlappingSlot(ctx context.Context, doctorID uuid.UUID, startTime time.Time, endTime time.Time) (bool, error) {
+	args := m.Called(ctx, doctorID, startTime, endTime)
+	return args.Bool(0), args.Error(1)
 }
 
 type MockAuditService struct {

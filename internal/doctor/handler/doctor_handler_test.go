@@ -60,6 +60,27 @@ func (m *MockDoctorService) ListDoctors(ctx context.Context, specialty *string, 
 	return args.Get(0).([]*dto.DoctorResponse), args.Int(1), args.Error(2)
 }
 
+func (m *MockDoctorService) AddAvailability(ctx context.Context, doctorUserID uuid.UUID, req dto.CreateAvailabilityRequest) (*dto.AvailabilityResponse, error) {
+	args := m.Called(ctx, doctorUserID, req)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*dto.AvailabilityResponse), args.Error(1)
+}
+
+func (m *MockDoctorService) RemoveAvailability(ctx context.Context, doctorUserID uuid.UUID, slotID uuid.UUID) error {
+	args := m.Called(ctx, doctorUserID, slotID)
+	return args.Error(0)
+}
+
+func (m *MockDoctorService) GetAvailability(ctx context.Context, doctorID uuid.UUID, startTimeStr, endTimeStr string, isBooked *bool) ([]*dto.AvailabilityResponse, error) {
+	args := m.Called(ctx, doctorID, startTimeStr, endTimeStr, isBooked)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*dto.AvailabilityResponse), args.Error(1)
+}
+
 func TestDoctorHandler_GetByID(t *testing.T) {
 	mockSvc := new(MockDoctorService)
 	cfg := &config.Config{}

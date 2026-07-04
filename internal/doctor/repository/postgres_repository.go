@@ -206,3 +206,119 @@ func (r *PostgresRepository) List(ctx context.Context, specialty *string, onlyVe
 
 	return doctors, totalItems, nil
 }
+
+func (r *PostgresRepository) CreateAvailability(ctx context.Context, slot *model.Availability) error {
+	query := `
+		INSERT INTO doctor_availability (id, doctor_id, start_time, end_time, is_booked, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)`
+	if slot.ID == uuid.Nil {
+		slot.ID = uuid.New()
+	}
+	now := time.Now().UTC()
+	slot.CreatedAt = now
+	slot.UpdatedAt = now
+
+	_, err := r.db.Exec(ctx, query, slot.ID, slot.DoctorID, slot.StartTime, slot.EndTime, slot.IsBooked, slot.CreatedAt, slot.UpdatedAt)
+	if err != nil {
+		return fmt.Errorf("failed to insert availability slot: %w", err)
+	}
+	return nil
+}
+
+func (r *PostgresRepository) DeleteAvailability(ctx context.Context, doctorID uuid.UUID, slotID uuid.UUID) error {
+	// Check if slot exists, belongs to doctor, and is booked
+	queryCheck := `SELECT is_booked FROM doctor_availability WHERE id = $1 AND doctor_id = $2`
+	var isBooked bool
+	err := r.db.QueryRow(ctx, queryCheck, slotID, doctorID).Scan(&isBooked)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return ErrAvailabilityNotFound
+		}
+		return fmt.Errorf("failed to check slot status: %w", err)
+	}
+
+	if isBooked {
+		return ErrSlotBooked
+	}
+
+	queryDelete := `DELETE FROM doctor_availability WHERE id = $1 AND doctor_id = $2`
+	res, err := r.db.Exec(ctx, queryDelete, slotID, doctorID)
+	if err != nil {
+		return fmt.Errorf("failed to delete availability slot: %w", err)
+	}
+	if res.RowsAffected() == 0 {
+		return ErrAvailabilityNotFound
+	}
+	return nil
+}
+
+func (r *PostgresRepository) GetAvailabilityByID(ctx context.Context, slotID uuid.UUID) (*model.Availability, error) {
+	query := `
+		SELECT id, doctor_id, start_time, end_time, is_booked, created_at, updated_at
+		FROM doctor_availability
+		WHERE id = $1`
+	var s model.Availability
+	err := r.db.QueryRow(ctx, query, slotID).Scan(
+		&s.ID, &s.DoctorID, &s.StartTime, &s.EndTime, &s.IsBooked, &s.CreatedAt, &s.UpdatedAt,
+	)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrAvailabilityNotFound
+		}
+		return nil, fmt.Errorf("failed to fetch availability slot: %w", err)
+	}
+	return &s, nil
+}
+
+func (r *PostgresRepository) ListAvailability(ctx context.Context, doctorID uuid.UUID, startTime time.Time, endTime time.Time, isBooked *bool) ([]*model.Availability, error) {
+	var query strings.Builder
+	query.WriteString(`
+		SELECT id, doctor_id, start_time, end_time, is_booked, created_at, updated_at
+		FROM doctor_availability
+		WHERE doctor_id = $1 AND start_time >= $2 AND end_time <= $3`)
+	
+	args := []any{doctorID, startTime, endTime}
+	placeholderIdx := 4
+
+	if isBooked != nil {
+		query.WriteString(fmt.Sprintf(" AND is_booked = $%d", placeholderIdx))
+		args = append(args, *isBooked)
+		placeholderIdx++
+	}
+
+	query.WriteString(" ORDER BY start_time ASC")
+
+	rows, err := r.db.Query(ctx, query.String(), args...)
+	if err != nil {
+		return nil, fmt.Errorf("failed to list availability: %w", err)
+	}
+	defer rows.Close()
+
+	var slots []*model.Availability
+	for rows.Next() {
+		var s model.Availability
+		err := rows.Scan(&s.ID, &s.DoctorID, &s.StartTime, &s.EndTime, &s.IsBooked, &s.CreatedAt, &s.UpdatedAt)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan availability slot: %w", err)
+		}
+		slots = append(slots, &s)
+	}
+	return slots, nil
+}
+
+func (r *PostgresRepository) CheckOverlappingSlot(ctx context.Context, doctorID uuid.UUID, startTime time.Time, endTime time.Time) (bool, error) {
+	query := `
+		SELECT EXISTS (
+			SELECT 1 
+			FROM doctor_availability 
+			WHERE doctor_id = $1 
+			  AND start_time < $3 
+			  AND end_time > $2
+		)`
+	var exists bool
+	err := r.db.QueryRow(ctx, query, doctorID, startTime, endTime).Scan(&exists)
+	if err != nil {
+		return false, fmt.Errorf("failed to check overlapping slot: %w", err)
+	}
+	return exists, nil
+}

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/timurdianradhasejati/telemed_hub/internal/doctor/dto"
 )
@@ -28,6 +29,44 @@ func (ve ValidationErrors) Error() string {
 		sb.WriteString(err.Field + ": " + err.Issue)
 	}
 	return sb.String()
+}
+
+func ValidateCreateAvailability(req dto.CreateAvailabilityRequest) (time.Time, time.Time, error) {
+	var errs ValidationErrors
+	var startTime, endTime time.Time
+	var err error
+
+	if req.StartTime == "" {
+		errs = append(errs, ValidationError{Field: "start_time", Issue: "must not be empty"})
+	} else {
+		startTime, err = time.Parse(time.RFC3339, req.StartTime)
+		if err != nil {
+			errs = append(errs, ValidationError{Field: "start_time", Issue: "must be in valid RFC3339 format"})
+		} else if startTime.Before(time.Now().UTC()) {
+			errs = append(errs, ValidationError{Field: "start_time", Issue: "must be in the future"})
+		}
+	}
+
+	if req.EndTime == "" {
+		errs = append(errs, ValidationError{Field: "end_time", Issue: "must not be empty"})
+	} else {
+		endTime, err = time.Parse(time.RFC3339, req.EndTime)
+		if err != nil {
+			errs = append(errs, ValidationError{Field: "end_time", Issue: "must be in valid RFC3339 format"})
+		}
+	}
+
+	if len(errs) == 0 {
+		if !startTime.Before(endTime) {
+			errs = append(errs, ValidationError{Field: "end_time", Issue: "must be after start_time"})
+		}
+	}
+
+	if len(errs) > 0 {
+		return time.Time{}, time.Time{}, errs
+	}
+
+	return startTime.UTC(), endTime.UTC(), nil
 }
 
 func ValidateUpdateDoctor(req dto.UpdateDoctorRequest) error {

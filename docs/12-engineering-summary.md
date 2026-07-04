@@ -43,7 +43,8 @@ flowchart LR
 | Sprint 0 (Infra Setup) | ✅ Completed | Project structure, config, slog, readyz/healthz wired and dockerized |
 | Sprint 1 (Auth) | ✅ Completed | Hashing Argon2id, JWT + Refresh Token rotation, and endpoints implemented |
 | Sprint 2 (User Profiles) | ✅ Completed | Complete details updates for Patient & Doctor, credentials visibility gate & Admin verification audit logging |
-| Sprint 3+ | ✅ Unblocked | Reschedule endpoint, File module, Pharmacy staff role assignment — all now in `07-api-design.md` |
+| Sprint 3 (Doctor Slots) | ✅ Completed | Availability slots CRUD, overlap interval checking, and booked deletion prevention gates |
+| Sprint 4+ | ✅ Unblocked | Reschedule endpoint, File module, Pharmacy staff role assignment — all now in `07-api-design.md` |
 
 **All 5 architecture review blockers resolved** (see `architecture_review.md` for original findings).
 
