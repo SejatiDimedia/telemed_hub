@@ -6,19 +6,30 @@ import (
 	"time"
 )
 
+// PaginationInfo holds standard pagination metadata.
+type PaginationInfo struct {
+	Page       int `json:"page"`
+	Limit      int `json:"limit"`
+	TotalItems int `json:"total_items"`
+	TotalPages int `json:"total_pages"`
+}
+
 // Response is the standard JSON envelope used by all API endpoints.
 type Response struct {
-	Success   bool   `json:"success"`
-	Message   string `json:"message,omitempty"`
-	Data      any    `json:"data,omitempty"`
-	Error     string `json:"error,omitempty"`
-	ErrorCode string `json:"error_code,omitempty"`
-	Timestamp string `json:"timestamp"`
+	Success    bool            `json:"success"`
+	Message    string          `json:"message,omitempty"`
+	Data       any             `json:"data,omitempty"`
+	Pagination *PaginationInfo `json:"pagination,omitempty"`
+	Error      string          `json:"error,omitempty"`
+	ErrorCode  string          `json:"error_code,omitempty"`
+	Timestamp  string          `json:"timestamp"`
 }
 
 // JSON writes a JSON response with the given status code and payload.
 func JSON(w http.ResponseWriter, status int, resp Response) {
-	resp.Timestamp = time.Now().UTC().Format(time.RFC3339)
+	if resp.Timestamp == "" {
+		resp.Timestamp = time.Now().UTC().Format(time.RFC3339)
+	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(status)
 	_ = json.NewEncoder(w).Encode(resp)

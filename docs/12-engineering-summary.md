@@ -40,9 +40,9 @@ flowchart LR
 
 | Sprint | Status | Notes |
 |---|---|---|
-| Sprint 0 (Infra Setup) | ✅ Ready to start | All blockers resolved in documentation |
-| Sprint 1 (Auth) | ✅ Unblocked | `refresh_tokens` table now specified; Argon2id locked; rate limiting specified |
-| Sprint 2 (User Profiles) | ✅ Unblocked | `phone_number` on users; profile completion gate documented |
+| Sprint 0 (Infra Setup) | ✅ Completed | Project structure, config, slog, readyz/healthz wired and dockerized |
+| Sprint 1 (Auth) | ✅ Completed | Hashing Argon2id, JWT + Refresh Token rotation, and endpoints implemented |
+| Sprint 2 (User Profiles) | ✅ Completed | Complete details updates for Patient & Doctor, credentials visibility gate & Admin verification audit logging |
 | Sprint 3+ | ✅ Unblocked | Reschedule endpoint, File module, Pharmacy staff role assignment — all now in `07-api-design.md` |
 
 **All 5 architecture review blockers resolved** (see `architecture_review.md` for original findings).

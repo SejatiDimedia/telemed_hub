@@ -19,7 +19,10 @@ import (
 
 	"github.com/timurdianradhasejati/telemed_hub/internal/auth"
 	"github.com/timurdianradhasejati/telemed_hub/internal/config"
+	"github.com/timurdianradhasejati/telemed_hub/internal/doctor"
 	"github.com/timurdianradhasejati/telemed_hub/internal/healthcheck"
+	"github.com/timurdianradhasejati/telemed_hub/internal/patient"
+	"github.com/timurdianradhasejati/telemed_hub/internal/shared"
 	"github.com/timurdianradhasejati/telemed_hub/pkg/logger"
 )
 
@@ -113,12 +116,19 @@ func main() {
 	r.Get("/healthz", healthHandler.Healthz)
 	r.Get("/readyz", healthHandler.Readyz)
 
+	// --- Initialize Shared Services ---
+	auditSvc := shared.NewAuditService(dbPool)
+
 	// --- Initialize Modules ---
 	authMod := auth.NewModule(dbPool, rdb, cfg, log)
+	patientMod := patient.NewModule(dbPool, rdb, cfg, log)
+	doctorMod := doctor.NewModule(dbPool, rdb, cfg, auditSvc, log)
 
 	// API v1 routes
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Mount("/auth", authMod.Handler.Routes())
+		r.Mount("/patients", patientMod.Handler.Routes())
+		r.Mount("/doctors", doctorMod.Handler.Routes())
 	})
 
 	// --- Start HTTP server with graceful shutdown ---
