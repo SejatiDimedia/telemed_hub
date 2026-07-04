@@ -17,6 +17,7 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/redis/go-redis/v9"
 
+	"github.com/timurdianradhasejati/telemed_hub/internal/auth"
 	"github.com/timurdianradhasejati/telemed_hub/internal/config"
 	"github.com/timurdianradhasejati/telemed_hub/internal/healthcheck"
 	"github.com/timurdianradhasejati/telemed_hub/pkg/logger"
@@ -112,12 +113,12 @@ func main() {
 	r.Get("/healthz", healthHandler.Healthz)
 	r.Get("/readyz", healthHandler.Readyz)
 
-	// API v1 routes (Sprint 1+ will mount module routes here)
+	// --- Initialize Modules ---
+	authMod := auth.NewModule(dbPool, rdb, cfg, log)
+
+	// API v1 routes
 	r.Route("/api/v1", func(r chi.Router) {
-		// Module routes will be mounted here in subsequent sprints:
-		// r.Mount("/auth", authHandler.Routes())
-		// r.Mount("/doctors", doctorHandler.Routes())
-		// etc.
+		r.Mount("/auth", authMod.Handler.Routes())
 	})
 
 	// --- Start HTTP server with graceful shutdown ---
