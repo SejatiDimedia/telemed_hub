@@ -49,8 +49,9 @@ func (s *ConsultationServiceImpl) GetByID(ctx context.Context, id uuid.UUID, use
 		return nil, err
 	}
 
-	// Verify authorization by querying appointment (centralized authorization)
-	_, err = s.appointmentSvc.GetByID(ctx, cons.AppointmentID, userID, roles)
+	// Verify authorization by querying appointment (centralized authorization).
+	// The appointment response also provides DoctorID and PatientID for downstream use.
+	appt, err := s.appointmentSvc.GetByID(ctx, cons.AppointmentID, userID, roles)
 	if err != nil {
 		if errors.Is(err, appointmentService.ErrUnauthorized) {
 			return nil, ErrUnauthorized
@@ -58,7 +59,10 @@ func (s *ConsultationServiceImpl) GetByID(ctx context.Context, id uuid.UUID, use
 		return nil, err
 	}
 
-	return s.toResponse(cons), nil
+	resp := s.toResponse(cons)
+	resp.DoctorID = appt.DoctorID
+	resp.PatientID = appt.PatientID
+	return resp, nil
 }
 
 func (s *ConsultationServiceImpl) Start(ctx context.Context, id uuid.UUID, doctorUserID uuid.UUID) (*dto.ConsultationResponse, error) {

@@ -24,6 +24,7 @@ import (
 	"github.com/timurdianradhasejati/telemed_hub/internal/doctor"
 	"github.com/timurdianradhasejati/telemed_hub/internal/healthcheck"
 	"github.com/timurdianradhasejati/telemed_hub/internal/patient"
+	"github.com/timurdianradhasejati/telemed_hub/internal/prescription"
 	"github.com/timurdianradhasejati/telemed_hub/internal/shared"
 	"github.com/timurdianradhasejati/telemed_hub/internal/wallet"
 	"github.com/timurdianradhasejati/telemed_hub/pkg/logger"
@@ -129,6 +130,7 @@ func main() {
 	doctorMod := doctor.NewModule(dbPool, rdb, cfg, auditSvc, log)
 	appointmentMod := appointment.NewModule(dbPool, cfg, rdb, log, patientMod.Service, doctorMod.Service, walletSvc)
 	consultationMod := consultation.NewModule(dbPool, rdb, cfg, log, appointmentMod.Service)
+	prescriptionMod := prescription.NewModule(dbPool, rdb, cfg, log, consultationMod.Service, doctorMod.Service, patientMod.Service)
 
 	// Resolve setter DI for circular dependency
 	appointmentMod.Service.SetConsultationService(consultationMod.Service)
@@ -140,6 +142,7 @@ func main() {
 		r.Mount("/doctors", doctorMod.Handler.Routes())
 		r.Mount("/appointments", appointmentMod.Handler.Routes())
 		r.Mount("/consultations", consultationMod.Handler.Routes())
+		r.Mount("/prescriptions", prescriptionMod.Handler.Routes())
 	})
 
 	// --- Start HTTP server with graceful shutdown ---
