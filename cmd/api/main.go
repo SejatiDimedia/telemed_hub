@@ -20,6 +20,7 @@ import (
 	"github.com/timurdianradhasejati/telemed_hub/internal/appointment"
 	"github.com/timurdianradhasejati/telemed_hub/internal/auth"
 	"github.com/timurdianradhasejati/telemed_hub/internal/config"
+	"github.com/timurdianradhasejati/telemed_hub/internal/consultation"
 	"github.com/timurdianradhasejati/telemed_hub/internal/doctor"
 	"github.com/timurdianradhasejati/telemed_hub/internal/healthcheck"
 	"github.com/timurdianradhasejati/telemed_hub/internal/patient"
@@ -127,6 +128,10 @@ func main() {
 	patientMod := patient.NewModule(dbPool, rdb, cfg, log)
 	doctorMod := doctor.NewModule(dbPool, rdb, cfg, auditSvc, log)
 	appointmentMod := appointment.NewModule(dbPool, cfg, rdb, log, patientMod.Service, doctorMod.Service, walletSvc)
+	consultationMod := consultation.NewModule(dbPool, rdb, cfg, log, appointmentMod.Service)
+
+	// Resolve setter DI for circular dependency
+	appointmentMod.Service.SetConsultationService(consultationMod.Service)
 
 	// API v1 routes
 	r.Route("/api/v1", func(r chi.Router) {
@@ -134,6 +139,7 @@ func main() {
 		r.Mount("/patients", patientMod.Handler.Routes())
 		r.Mount("/doctors", doctorMod.Handler.Routes())
 		r.Mount("/appointments", appointmentMod.Handler.Routes())
+		r.Mount("/consultations", consultationMod.Handler.Routes())
 	})
 
 	// --- Start HTTP server with graceful shutdown ---

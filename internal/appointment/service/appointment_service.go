@@ -17,11 +17,12 @@ import (
 )
 
 type AppointmentServiceImpl struct {
-	repo          repository.AppointmentRepository
-	patientSvc    patientSvc.PatientService
-	doctorSvc     doctorSvc.DoctorService
-	walletSvc     wallet.WalletService
-	cutoffMinutes int
+	repo            repository.AppointmentRepository
+	patientSvc      patientSvc.PatientService
+	doctorSvc       doctorSvc.DoctorService
+	walletSvc       wallet.WalletService
+	consultationSvc ConsultationServiceClient
+	cutoffMinutes   int
 }
 
 func NewAppointmentService(
@@ -41,6 +42,10 @@ func NewAppointmentService(
 		walletSvc:     walletSvc,
 		cutoffMinutes: cutoffMinutes,
 	}
+}
+
+func (s *AppointmentServiceImpl) SetConsultationService(consSvc ConsultationServiceClient) {
+	s.consultationSvc = consSvc
 }
 
 func (s *AppointmentServiceImpl) Book(ctx context.Context, patientUserID uuid.UUID, req dto.CreateAppointmentRequest) (*dto.AppointmentResponse, error) {
@@ -121,6 +126,12 @@ func (s *AppointmentServiceImpl) Book(ctx context.Context, patientUserID uuid.UU
 			return nil, repository.ErrSlotAlreadyBooked
 		}
 		return nil, err
+	}
+
+	if s.consultationSvc != nil {
+		if errCons := s.consultationSvc.CreateConsultation(ctx, apt.ID); errCons != nil {
+			return nil, fmt.Errorf("failed to create consultation session: %w", errCons)
+		}
 	}
 
 	return s.toResponse(apt), nil
@@ -274,6 +285,10 @@ func (s *AppointmentServiceImpl) Cancel(ctx context.Context, id uuid.UUID, userI
 	err = s.repo.UpdateStatusWithLock(ctx, id, "cancelled", &req.CancelReason)
 	if err != nil {
 		return err
+	}
+
+	if s.consultationSvc != nil {
+		_ = s.consultationSvc.CancelConsultation(ctx, id)
 	}
 
 	// Process refund if cancelled before cutoff window

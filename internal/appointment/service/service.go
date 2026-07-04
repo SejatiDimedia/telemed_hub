@@ -17,10 +17,16 @@ var (
 	ErrAppointmentAlreadyCancelled = errors.New("appointment is already cancelled")
 )
 
+type ConsultationServiceClient interface {
+	CreateConsultation(ctx context.Context, appointmentID uuid.UUID) error
+	CancelConsultation(ctx context.Context, appointmentID uuid.UUID) error
+}
+
 type AppointmentService interface {
 	Book(ctx context.Context, patientUserID uuid.UUID, req dto.CreateAppointmentRequest) (*dto.AppointmentResponse, error)
 	GetByID(ctx context.Context, id uuid.UUID, userID uuid.UUID, roles []string) (*dto.AppointmentResponse, error)
 	List(ctx context.Context, userID uuid.UUID, roles []string, statusFilter string) ([]*dto.AppointmentResponse, error)
 	Cancel(ctx context.Context, id uuid.UUID, userID uuid.UUID, req dto.CancelAppointmentRequest) error
 	Reschedule(ctx context.Context, id uuid.UUID, userID uuid.UUID, req dto.RescheduleAppointmentRequest) (*dto.AppointmentResponse, error)
+	SetConsultationService(consSvc ConsultationServiceClient)
 }
