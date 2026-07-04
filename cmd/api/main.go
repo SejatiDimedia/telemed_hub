@@ -17,12 +17,14 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/redis/go-redis/v9"
 
+	"github.com/timurdianradhasejati/telemed_hub/internal/appointment"
 	"github.com/timurdianradhasejati/telemed_hub/internal/auth"
 	"github.com/timurdianradhasejati/telemed_hub/internal/config"
 	"github.com/timurdianradhasejati/telemed_hub/internal/doctor"
 	"github.com/timurdianradhasejati/telemed_hub/internal/healthcheck"
 	"github.com/timurdianradhasejati/telemed_hub/internal/patient"
 	"github.com/timurdianradhasejati/telemed_hub/internal/shared"
+	"github.com/timurdianradhasejati/telemed_hub/internal/wallet"
 	"github.com/timurdianradhasejati/telemed_hub/pkg/logger"
 )
 
@@ -118,17 +120,20 @@ func main() {
 
 	// --- Initialize Shared Services ---
 	auditSvc := shared.NewAuditService(dbPool)
+	walletSvc := wallet.NewWalletStub()
 
 	// --- Initialize Modules ---
 	authMod := auth.NewModule(dbPool, rdb, cfg, log)
 	patientMod := patient.NewModule(dbPool, rdb, cfg, log)
 	doctorMod := doctor.NewModule(dbPool, rdb, cfg, auditSvc, log)
+	appointmentMod := appointment.NewModule(dbPool, cfg, rdb, log, patientMod.Service, doctorMod.Service, walletSvc)
 
 	// API v1 routes
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Mount("/auth", authMod.Handler.Routes())
 		r.Mount("/patients", patientMod.Handler.Routes())
 		r.Mount("/doctors", doctorMod.Handler.Routes())
+		r.Mount("/appointments", appointmentMod.Handler.Routes())
 	})
 
 	// --- Start HTTP server with graceful shutdown ---

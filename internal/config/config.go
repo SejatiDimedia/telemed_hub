@@ -11,12 +11,13 @@ import (
 // Loaded once at startup from environment variables (12-factor style).
 // Passed via dependency injection — no global config lookups.
 type Config struct {
-	App      AppConfig
-	DB       DBConfig
-	Redis    RedisConfig
-	MinIO    MinIOConfig
-	JWT      JWTConfig
-	Server   ServerConfig
+	App                              AppConfig
+	DB                               DBConfig
+	Redis                            RedisConfig
+	MinIO                            MinIOConfig
+	JWT                              JWTConfig
+	Server                           ServerConfig
+	AppointmentCancelCutoffMinutes int
 }
 
 type AppConfig struct {
@@ -107,6 +108,12 @@ func Load() (*Config, error) {
 		return nil, fmt.Errorf("invalid JWT_REFRESH_TTL_DAYS: %w", err)
 	}
 	cfg.JWT.RefreshTTLDays = refreshDays
+
+	cutoffMins, err := getEnvAsInt("APPOINTMENT_CANCEL_CUTOFF_MINUTES", 60)
+	if err != nil {
+		return nil, fmt.Errorf("invalid APPOINTMENT_CANCEL_CUTOFF_MINUTES: %w", err)
+	}
+	cfg.AppointmentCancelCutoffMinutes = cutoffMins
 
 	return cfg, nil
 }
