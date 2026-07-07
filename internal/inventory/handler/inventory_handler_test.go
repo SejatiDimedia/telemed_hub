@@ -18,6 +18,7 @@ import (
 	"github.com/timurdianradhasejati/telemed_hub/internal/inventory/service"
 	"github.com/timurdianradhasejati/telemed_hub/pkg/logger"
 	"github.com/timurdianradhasejati/telemed_hub/pkg/middleware"
+	"github.com/jackc/pgx/v5"
 )
 
 type MockInventoryService struct {
@@ -54,6 +55,16 @@ func (m *MockInventoryService) List(ctx context.Context, nameFilter *string, req
 		return nil, args.Int(1), args.Error(2)
 	}
 	return args.Get(0).([]*dto.MedicineResponse), args.Int(1), args.Error(2)
+}
+
+func (m *MockInventoryService) DecrementStock(ctx context.Context, tx pgx.Tx, id uuid.UUID, qty int) error {
+	args := m.Called(ctx, tx, id, qty)
+	return args.Error(0)
+}
+
+func (m *MockInventoryService) IncrementStock(ctx context.Context, tx pgx.Tx, id uuid.UUID, qty int) error {
+	args := m.Called(ctx, tx, id, qty)
+	return args.Error(0)
 }
 
 func (m *MockInventoryService) Delete(ctx context.Context, adminUserID uuid.UUID, id uuid.UUID) error {

@@ -153,7 +153,7 @@ func TestPostgresRepository_MedicineOperations(t *testing.T) {
 				defer wg.Done()
 
 				// Start database transaction
-				tx, err := db.BeginTx(ctx, nil)
+				tx, err := db.Begin(ctx)
 				if err != nil {
 					mu.Lock()
 					failCount++

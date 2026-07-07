@@ -20,4 +20,5 @@ type MedicineRepository interface {
 	GetByIDForUpdate(ctx context.Context, tx pgx.Tx, id uuid.UUID) (*model.Medicine, error)
 	List(ctx context.Context, nameFilter *string, reqPrescFilter *bool, page, limit int) ([]*model.Medicine, int, error)
 	SoftDelete(ctx context.Context, id uuid.UUID, deletedBy uuid.UUID) error
+	UpdateStock(ctx context.Context, tx pgx.Tx, id uuid.UUID, newStock int) error
 }

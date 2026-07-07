@@ -200,3 +200,35 @@ func (r *PostgresRepository) SoftDelete(ctx context.Context, id uuid.UUID, delet
 	}
 	return nil
 }
+
+func (r *PostgresRepository) UpdateStock(ctx context.Context, tx pgx.Tx, id uuid.UUID, newStock int) error {
+	now := time.Now().UTC()
+	query := `
+		UPDATE medicines
+		SET stock_quantity = $1, updated_at = $2
+		WHERE id = $3 AND deleted_at IS NULL
+	`
+	var err error
+	var affected int64
+
+	if tx != nil {
+		tag, err := tx.Exec(ctx, query, newStock, now, id)
+		if err == nil {
+			affected = tag.RowsAffected()
+		}
+	} else {
+		tag, err := r.db.Exec(ctx, query, newStock, now, id)
+		if err == nil {
+			affected = tag.RowsAffected()
+		}
+	}
+
+	if err != nil {
+		return fmt.Errorf("failed to update stock: %w", err)
+	}
+	if affected == 0 {
+		return ErrMedicineNotFound
+	}
+	return nil
+}
+

@@ -14,6 +14,8 @@ import (
 	doctorDto "github.com/timurdianradhasejati/telemed_hub/internal/doctor/dto"
 	patientDto "github.com/timurdianradhasejati/telemed_hub/internal/patient/dto"
 	"github.com/timurdianradhasejati/telemed_hub/internal/wallet"
+	walletDto "github.com/timurdianradhasejati/telemed_hub/internal/wallet/dto"
+	"github.com/jackc/pgx/v5"
 )
 
 type MockAppointmentRepository struct {
@@ -165,6 +167,34 @@ func (m *MockWalletService) Refund(ctx context.Context, userID uuid.UUID, amount
 	args := m.Called(ctx, userID, amount, description)
 	return args.Error(0)
 }
+
+func (m *MockWalletService) GetBalanceDetails(ctx context.Context, userID uuid.UUID) (*walletDto.WalletResponse, error) {
+	return nil, nil
+}
+
+func (m *MockWalletService) TopUp(ctx context.Context, userID uuid.UUID, amount float64, idempotencyKey *string) (*walletDto.TransactionResponse, error) {
+	return nil, nil
+}
+
+func (m *MockWalletService) ListTransactions(ctx context.Context, userID uuid.UUID, typeFilter *string, page, limit int) ([]*walletDto.TransactionResponse, int, error) {
+	return nil, 0, nil
+}
+
+func (m *MockWalletService) GetTransactionByIdempotencyKey(ctx context.Context, key string) (*walletDto.TransactionResponse, error) {
+	return nil, nil
+}
+
+func (m *MockWalletService) DeductTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID, amount int64, description string, idempotencyKey *string) error {
+	args := m.Called(ctx, tx, userID, amount, description, idempotencyKey)
+	return args.Error(0)
+}
+
+func (m *MockWalletService) RefundTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID, amount int64, description string) error {
+	args := m.Called(ctx, tx, userID, amount, description)
+	return args.Error(0)
+}
+
+var _ wallet.WalletService = (*MockWalletService)(nil)
 
 func TestAppointmentService_Book(t *testing.T) {
 	mockRepo := new(MockAppointmentRepository)

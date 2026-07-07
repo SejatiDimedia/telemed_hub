@@ -4,7 +4,7 @@ Sprints are assumed to be **1–2 weeks** each, part-time pace, consistent with 
 
 ---
 
-## Sprint 0 — Project Setup
+## Sprint 0 — Project Setup (✅ Completed)
 
 | | |
 |---|---|
@@ -15,7 +15,7 @@ Sprints are assumed to be **1–2 weeks** each, part-time pace, consistent with 
 | **Deliverables** | `docker-compose up` boots an empty API returning `200` on `/healthz` |
 | **Estimated Duration** | 3–5 days |
 
-## Sprint 1 — Authentication
+## Sprint 1 — Authentication (✅ Completed)
 
 | | |
 |---|---|
@@ -26,7 +26,7 @@ Sprints are assumed to be **1–2 weeks** each, part-time pace, consistent with 
 | **Deliverables** | Working `/auth/*` endpoints per `07-api-design.md`, unit-tested |
 | **Estimated Duration** | 1–1.5 weeks |
 
-## Sprint 2 — User Management
+## Sprint 2 — User Management (✅ Completed)
 
 | | |
 |---|---|
@@ -37,7 +37,7 @@ Sprints are assumed to be **1–2 weeks** each, part-time pace, consistent with 
 | **Deliverables** | `/users/me` style endpoints, role-based middleware proven end-to-end |
 | **Estimated Duration** | 3–5 days |
 
-## Sprint 3 — Doctor
+## Sprint 3 — Doctor (✅ Completed)
 
 | | |
 |---|---|
@@ -48,7 +48,7 @@ Sprints are assumed to be **1–2 weeks** each, part-time pace, consistent with 
 | **Deliverables** | Doctor listing/search, availability CRUD, admin verification flow |
 | **Estimated Duration** | 1 week |
 
-## Sprint 4 — Appointment
+## Sprint 4 — Appointment (✅ Completed)
 
 | | |
 |---|---|
@@ -59,7 +59,7 @@ Sprints are assumed to be **1–2 weeks** each, part-time pace, consistent with 
 | **Deliverables** | Race-condition-safe booking flow, load-tested for concurrent booking attempts |
 | **Estimated Duration** | 1.5–2 weeks |
 
-## Sprint 5 — Consultation
+## Sprint 5 — Consultation (✅ Completed)
 
 | | |
 |---|---|
@@ -70,7 +70,7 @@ Sprints are assumed to be **1–2 weeks** each, part-time pace, consistent with 
 | **Deliverables** | Full appointment → consultation flow working end-to-end |
 | **Estimated Duration** | 1 week |
 
-## Sprint 6 — Prescription
+## Sprint 6 — Prescription (✅ Completed)
 
 | | |
 |---|---|
@@ -81,7 +81,7 @@ Sprints are assumed to be **1–2 weeks** each, part-time pace, consistent with 
 | **Deliverables** | Prescription issuance endpoint, viewable by patient/doctor |
 | **Estimated Duration** | 3–5 days |
 
-## Sprint 7 — Inventory
+## Sprint 7 — Inventory (✅ Completed)
 
 | | |
 |---|---|
@@ -92,7 +92,7 @@ Sprints are assumed to be **1–2 weeks** each, part-time pace, consistent with 
 | **Deliverables** | Medicine catalog endpoints per `07-api-design.md` |
 | **Estimated Duration** | 3–5 days |
 
-## Sprint 8 — Wallet
+## Sprint 8 — Wallet (✅ Completed)
 
 | | |
 |---|---|
@@ -103,7 +103,7 @@ Sprints are assumed to be **1–2 weeks** each, part-time pace, consistent with 
 | **Deliverables** | Order creation with atomic wallet deduction, concurrency load-tested |
 | **Estimated Duration** | 1.5–2 weeks |
 
-## Sprint 9 — Medical Records
+## Sprint 9 — Medical Records (✅ Completed)
 
 | | |
 |---|---|
@@ -215,29 +215,27 @@ Sprints are assumed to be **1–2 weeks** each, part-time pace, consistent with 
 
 ---
 
-## Roadmap-at-a-Glance
-
-| Sprint | Focus | Depends On |
-|---|---|---|
-| 0 | Project Setup | — |
-| 1 | Authentication | 0 |
-| 2 | User Management | 1 |
-| 3 | Doctor | 2 |
-| 4 | Appointment | 3 |
-| 5 | Consultation | 4 |
-| 6 | Prescription | 5 |
-| 7 | Inventory | — (parallel-safe) |
-| 8 | Wallet | 6, 7 |
-| 9 | Medical Records | 5 |
-| 10 | Notification | 4, 8 |
-| 11 | AI Assistant | 2 |
-| 12 | Performance | 1–11 |
-| 13 | Background Workers | 10 |
-| 14 | Redis | 3, 12 |
-| 15 | Observability | all prior |
-| 16 | Service Extraction | 10, 15 |
-| 17 | Microservice Preparation | 16 |
-| 18 | Production Deployment | 15 |
+| Sprint | Focus | Status | Depends On |
+|---|---|---|---|
+| 0 | Project Setup | ✅ Completed | — |
+| 1 | Authentication | ✅ Completed | 0 |
+| 2 | User Management | ✅ Completed | 1 |
+| 3 | Doctor | ✅ Completed | 2 |
+| 4 | Appointment | ✅ Completed | 3 |
+| 5 | Consultation | ✅ Completed | 4 |
+| 6 | Prescription | ✅ Completed | 5 |
+| 7 | Inventory | ✅ Completed | — (parallel-safe) |
+| 8 | Wallet | ⏳ Next | 6, 7 |
+| 9 | Medical Records | ⏳ Pending | 5 |
+| 10 | Notification | ⏳ Pending | 4, 8 |
+| 11 | AI Assistant | ⏳ Pending | 2 |
+| 12 | Performance | ⏳ Pending | 1–11 |
+| 13 | Background Workers | ⏳ Pending | 10 |
+| 14 | Redis | ⏳ Pending | 3, 12 |
+| 15 | Observability | ⏳ Pending | all prior |
+| 16 | Service Extraction | ⏳ Pending | 10, 15 |
+| 17 | Microservice Preparation | ⏳ Pending | 16 |
+| 18 | Production Deployment | ⏳ Pending | 15 |
 
 ---
 

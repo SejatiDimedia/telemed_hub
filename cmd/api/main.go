@@ -26,6 +26,9 @@ import (
 	"github.com/timurdianradhasejati/telemed_hub/internal/patient"
 	"github.com/timurdianradhasejati/telemed_hub/internal/prescription"
 	"github.com/timurdianradhasejati/telemed_hub/internal/inventory"
+	"github.com/timurdianradhasejati/telemed_hub/internal/pharmacy"
+	"github.com/timurdianradhasejati/telemed_hub/internal/admin"
+	"github.com/timurdianradhasejati/telemed_hub/internal/medical_record"
 	"github.com/timurdianradhasejati/telemed_hub/internal/shared"
 	"github.com/timurdianradhasejati/telemed_hub/internal/wallet"
 	"github.com/timurdianradhasejati/telemed_hub/pkg/logger"
@@ -123,16 +126,19 @@ func main() {
 
 	// --- Initialize Shared Services ---
 	auditSvc := shared.NewAuditService(dbPool)
-	walletSvc := wallet.NewWalletStub()
 
 	// --- Initialize Modules ---
+	walletMod := wallet.NewModule(dbPool, rdb, cfg, log)
 	authMod := auth.NewModule(dbPool, rdb, cfg, log)
 	patientMod := patient.NewModule(dbPool, rdb, cfg, log)
 	doctorMod := doctor.NewModule(dbPool, rdb, cfg, auditSvc, log)
-	appointmentMod := appointment.NewModule(dbPool, cfg, rdb, log, patientMod.Service, doctorMod.Service, walletSvc)
+	appointmentMod := appointment.NewModule(dbPool, cfg, rdb, log, patientMod.Service, doctorMod.Service, walletMod.Service)
 	consultationMod := consultation.NewModule(dbPool, rdb, cfg, log, appointmentMod.Service)
 	prescriptionMod := prescription.NewModule(dbPool, rdb, cfg, log, consultationMod.Service, doctorMod.Service, patientMod.Service)
 	inventoryMod := inventory.NewModule(dbPool, rdb, cfg, log)
+	pharmacyMod := pharmacy.NewModule(dbPool, rdb, cfg, log, prescriptionMod.Service, inventoryMod.Service, patientMod.Service, walletMod.Service)
+	medicalRecordMod := medical_record.NewModule(dbPool, rdb, cfg, log, patientMod.Service, auditSvc)
+	adminMod := admin.NewModule(dbPool, rdb, cfg, log)
 
 	// Resolve setter DI for circular dependency
 	appointmentMod.Service.SetConsultationService(consultationMod.Service)
@@ -146,6 +152,10 @@ func main() {
 		r.Mount("/consultations", consultationMod.Handler.Routes())
 		r.Mount("/prescriptions", prescriptionMod.Handler.Routes())
 		r.Mount("/medicines", inventoryMod.Handler.Routes())
+		r.Mount("/wallet", walletMod.Handler.Routes())
+		r.Mount("/orders", pharmacyMod.Handler.Routes())
+		r.Mount("/medical-records", medicalRecordMod.Handler.Routes())
+		r.Mount("/admin", adminMod.Handler.Routes())
 	})
 
 	// --- Start HTTP server with graceful shutdown ---

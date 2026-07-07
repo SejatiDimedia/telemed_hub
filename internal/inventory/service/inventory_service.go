@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/timurdianradhasejati/telemed_hub/internal/inventory/dto"
 	"github.com/timurdianradhasejati/telemed_hub/internal/inventory/model"
 	"github.com/timurdianradhasejati/telemed_hub/internal/inventory/repository"
@@ -116,3 +117,32 @@ func toResponse(m *model.Medicine) *dto.MedicineResponse {
 		UpdatedAt:            m.UpdatedAt.Format(time.RFC3339),
 	}
 }
+
+func (s *InventoryServiceImpl) DecrementStock(ctx context.Context, tx pgx.Tx, medicineID uuid.UUID, quantity int) error {
+	m, err := s.repo.GetByIDForUpdate(ctx, tx, medicineID)
+	if err != nil {
+		if errors.Is(err, repository.ErrMedicineNotFound) {
+			return ErrMedicineNotFound
+		}
+		return err
+	}
+
+	if m.StockQuantity < quantity {
+		return ErrOutOfStock
+	}
+
+	return s.repo.UpdateStock(ctx, tx, medicineID, m.StockQuantity-quantity)
+}
+
+func (s *InventoryServiceImpl) IncrementStock(ctx context.Context, tx pgx.Tx, medicineID uuid.UUID, quantity int) error {
+	m, err := s.repo.GetByIDForUpdate(ctx, tx, medicineID)
+	if err != nil {
+		if errors.Is(err, repository.ErrMedicineNotFound) {
+			return ErrMedicineNotFound
+		}
+		return err
+	}
+
+	return s.repo.UpdateStock(ctx, tx, medicineID, m.StockQuantity+quantity)
+}
+

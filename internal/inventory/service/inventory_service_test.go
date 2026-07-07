@@ -57,6 +57,11 @@ func (m *MockMedicineRepository) SoftDelete(ctx context.Context, id uuid.UUID, d
 	return args.Error(0)
 }
 
+func (m *MockMedicineRepository) UpdateStock(ctx context.Context, tx pgx.Tx, id uuid.UUID, newStock int) error {
+	args := m.Called(ctx, tx, id, newStock)
+	return args.Error(0)
+}
+
 var _ repository.MedicineRepository = (*MockMedicineRepository)(nil)
 
 func TestInventoryService_Create(t *testing.T) {

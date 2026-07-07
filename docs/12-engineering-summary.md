@@ -47,6 +47,9 @@ flowchart LR
 | Sprint 4 (Appointment) | ✅ Completed | Race-condition-safe booking transactions using FOR UPDATE row locks, profile gates, and cancellations |
 | Sprint 5 (Consultation) | ✅ Completed | State transitions (scheduled -> in_progress -> completed), update notes, and cross-module hooks |
 | Sprint 6 (Prescription) | ✅ Completed | Header/line-item schema, issuance lifecycle, role-scoped access, `medicines` seed data |
+| Sprint 7 (Inventory) | ✅ Completed | Medicine catalog, dynamic filters, pagination, and stock oversell prevention tests |
+| Sprint 8 (Wallet & Orders) | ✅ Completed | Wallet ledger transaction, topup limits validation, checkout row locking, and automatic cancellation refund policy |
+| Sprint 9 (Medical Records & Auditing) | ✅ Completed | Longitudinal medical records CRUD, clinician-specific treatment boundaries, and transparent HIPAA auditing log querying |
 
 **All 5 architecture review blockers resolved** (see `architecture_review.md` for original findings).
 
