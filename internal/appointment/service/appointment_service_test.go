@@ -201,7 +201,7 @@ func TestAppointmentService_Book(t *testing.T) {
 	mockPatient := new(MockPatientService)
 	mockDoctor := new(MockDoctorService)
 	mockWallet := new(MockWalletService)
-	svc := NewAppointmentService(mockRepo, mockPatient, mockDoctor, mockWallet, 60)
+	svc := NewAppointmentService(mockRepo, mockPatient, mockDoctor, mockWallet, nil, 60)
 
 	ctx := context.Background()
 	patientUserID := uuid.New()

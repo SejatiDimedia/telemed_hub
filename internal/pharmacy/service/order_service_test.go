@@ -163,7 +163,7 @@ func TestOrderService_Operations(t *testing.T) {
 	walSvc := walletService.NewWalletService(walRepo, db)
 
 	orderRepo := repository.NewPostgresRepository(db)
-	orderSvc := NewOrderService(orderRepo, db, presSvc, invSvc, patSvc, walSvc)
+	orderSvc := NewOrderService(orderRepo, db, presSvc, invSvc, patSvc, walSvc, nil)
 
 	// Seed dependencies
 	patientUserID, _, _, prescriptionID, medicineID := seedCompleteRequiredData(t, ctx, db)

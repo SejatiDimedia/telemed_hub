@@ -50,6 +50,7 @@ flowchart LR
 | Sprint 7 (Inventory) | ✅ Completed | Medicine catalog, dynamic filters, pagination, and stock oversell prevention tests |
 | Sprint 8 (Wallet & Orders) | ✅ Completed | Wallet ledger transaction, topup limits validation, checkout row locking, and automatic cancellation refund policy |
 | Sprint 9 (Medical Records & Auditing) | ✅ Completed | Longitudinal medical records CRUD, clinician-specific treatment boundaries, and transparent HIPAA auditing log querying |
+| Sprint 10 (Notification) | ✅ Completed | Asynchronous, durable notification dispatching using Redis Streams, worker pool, and exponential backoff |
 
 **All 5 architecture review blockers resolved** (see `architecture_review.md` for original findings).
 

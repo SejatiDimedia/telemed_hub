@@ -17,6 +17,7 @@ import (
 	"github.com/timurdianradhasejati/telemed_hub/internal/pharmacy/model"
 	"github.com/timurdianradhasejati/telemed_hub/internal/pharmacy/repository"
 	walletSvc "github.com/timurdianradhasejati/telemed_hub/internal/wallet"
+	"github.com/timurdianradhasejati/telemed_hub/internal/notification"
 )
 
 var (
@@ -32,6 +33,7 @@ type OrderServiceImpl struct {
 	inventorySvc    inventorySvc.InventoryService
 	patientSvc      patientSvc.PatientService
 	walletSvc       walletSvc.WalletService
+	notificationSvc notification.NotificationService
 }
 
 func NewOrderService(
@@ -41,6 +43,7 @@ func NewOrderService(
 	inventorySvc inventorySvc.InventoryService,
 	patientSvc patientSvc.PatientService,
 	walletSvc walletSvc.WalletService,
+	notificationSvc notification.NotificationService,
 ) *OrderServiceImpl {
 	return &OrderServiceImpl{
 		repo:            repo,
@@ -49,6 +52,7 @@ func NewOrderService(
 		inventorySvc:    inventorySvc,
 		patientSvc:      patientSvc,
 		walletSvc:       walletSvc,
+		notificationSvc: notificationSvc,
 	}
 }
 
@@ -152,6 +156,13 @@ func (s *OrderServiceImpl) Create(ctx context.Context, patientUserID uuid.UUID, 
 	// 8. Commit Transaction
 	if err := tx.Commit(ctx); err != nil {
 		return nil, fmt.Errorf("failed to commit order transaction: %w", err)
+	}
+
+	if s.notificationSvc != nil {
+		_ = s.notificationSvc.PublishNotification(ctx, patientUserID, "email", "order_status", map[string]any{
+			"order_id": orderID.String(),
+			"status":   "pending",
+		})
 	}
 
 	// Fetch saved order with actual timestamps
@@ -258,6 +269,18 @@ func (s *OrderServiceImpl) UpdateStatus(ctx context.Context, adminOrStaffUserID 
 		return nil, fmt.Errorf("failed to commit update status transaction: %w", err)
 	}
 
+	if s.notificationSvc != nil {
+		pat, errPat := s.patientSvc.GetProfileByID(ctx, ord.PatientID)
+		if errPat == nil {
+			if patUserID, errParse := uuid.Parse(pat.UserID); errParse == nil {
+				_ = s.notificationSvc.PublishNotification(ctx, patUserID, "email", "order_status", map[string]any{
+					"order_id": id.String(),
+					"status":   req.Status,
+				})
+			}
+		}
+	}
+
 	updated, err := s.repo.GetByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -306,7 +329,19 @@ func (s *OrderServiceImpl) Cancel(ctx context.Context, patientUserID uuid.UUID, 
 		return err
 	}
 
-	return tx.Commit(ctx)
+	err = tx.Commit(ctx)
+	if err != nil {
+		return err
+	}
+
+	if s.notificationSvc != nil {
+		_ = s.notificationSvc.PublishNotification(ctx, patientUserID, "email", "order_status", map[string]any{
+			"order_id": id.String(),
+			"status":   "cancelled",
+		})
+	}
+
+	return nil
 }
 
 func (s *OrderServiceImpl) processOrderCancellationAndRefund(ctx context.Context, tx pgx.Tx, ord *model.Order) error {

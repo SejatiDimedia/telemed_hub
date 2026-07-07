@@ -114,7 +114,7 @@ Sprints are assumed to be **1–2 weeks** each, part-time pace, consistent with 
 | **Deliverables** | Records API with verified audit trail on every doctor/admin access |
 | **Estimated Duration** | 1 week |
 
-## Sprint 10 — Notification
+## Sprint 10 — Notification (✅ Completed)
 
 | | |
 |---|---|

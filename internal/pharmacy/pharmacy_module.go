@@ -13,6 +13,7 @@ import (
 	"github.com/timurdianradhasejati/telemed_hub/internal/pharmacy/repository"
 	"github.com/timurdianradhasejati/telemed_hub/internal/pharmacy/service"
 	walletSvc "github.com/timurdianradhasejati/telemed_hub/internal/wallet"
+	"github.com/timurdianradhasejati/telemed_hub/internal/notification"
 )
 
 type Module struct {
@@ -29,9 +30,10 @@ func NewModule(
 	inventorySvc inventorySvc.InventoryService,
 	patientSvc patientSvc.PatientService,
 	walletSvc walletSvc.WalletService,
+	notificationSvc notification.NotificationService,
 ) *Module {
 	repo := repository.NewPostgresRepository(db)
-	svc := service.NewOrderService(repo, db, prescriptionSvc, inventorySvc, patientSvc, walletSvc)
+	svc := service.NewOrderService(repo, db, prescriptionSvc, inventorySvc, patientSvc, walletSvc, notificationSvc)
 	h := handler.NewOrderHandler(svc, cfg, rdb, log)
 
 	return &Module{

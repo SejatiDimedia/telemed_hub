@@ -14,6 +14,7 @@ import (
 	doctorSvc "github.com/timurdianradhasejati/telemed_hub/internal/doctor/service"
 	patientSvc "github.com/timurdianradhasejati/telemed_hub/internal/patient/service"
 	"github.com/timurdianradhasejati/telemed_hub/internal/wallet"
+	"github.com/timurdianradhasejati/telemed_hub/internal/notification"
 )
 
 type AppointmentServiceImpl struct {
@@ -21,6 +22,7 @@ type AppointmentServiceImpl struct {
 	patientSvc      patientSvc.PatientService
 	doctorSvc       doctorSvc.DoctorService
 	walletSvc       wallet.WalletService
+	notificationSvc notification.NotificationService
 	consultationSvc ConsultationServiceClient
 	cutoffMinutes   int
 }
@@ -30,17 +32,19 @@ func NewAppointmentService(
 	patientSvc patientSvc.PatientService,
 	doctorSvc doctorSvc.DoctorService,
 	walletSvc wallet.WalletService,
+	notificationSvc notification.NotificationService,
 	cutoffMinutes int,
 ) *AppointmentServiceImpl {
 	if cutoffMinutes <= 0 {
 		cutoffMinutes = 60 // default 60 minutes
 	}
 	return &AppointmentServiceImpl{
-		repo:          repo,
-		patientSvc:    patientSvc,
-		doctorSvc:     doctorSvc,
-		walletSvc:     walletSvc,
-		cutoffMinutes: cutoffMinutes,
+		repo:            repo,
+		patientSvc:      patientSvc,
+		doctorSvc:       doctorSvc,
+		walletSvc:       walletSvc,
+		notificationSvc: notificationSvc,
+		cutoffMinutes:   cutoffMinutes,
 	}
 }
 
@@ -131,6 +135,25 @@ func (s *AppointmentServiceImpl) Book(ctx context.Context, patientUserID uuid.UU
 	if s.consultationSvc != nil {
 		if errCons := s.consultationSvc.CreateConsultation(ctx, apt.ID); errCons != nil {
 			return nil, fmt.Errorf("failed to create consultation session: %w", errCons)
+		}
+	}
+	if s.notificationSvc != nil {
+		// 1. Notify Patient
+		_ = s.notificationSvc.PublishNotification(ctx, patientUserID, "email", "appointment_confirmed", map[string]any{
+			"appointment_id": apt.ID.String(),
+			"role":           "patient",
+			"scheduled_at":   apt.ScheduledAt.Format(time.RFC3339),
+			"doctor_name":    docProfile.FullName,
+		})
+
+		// 2. Notify Doctor
+		if docUserID, errParser := uuid.Parse(docProfile.UserID); errParser == nil {
+			_ = s.notificationSvc.PublishNotification(ctx, docUserID, "email", "appointment_confirmed", map[string]any{
+				"appointment_id": apt.ID.String(),
+				"role":           "doctor",
+				"scheduled_at":   apt.ScheduledAt.Format(time.RFC3339),
+				"patient_name":   patProfile.FullName,
+			})
 		}
 	}
 

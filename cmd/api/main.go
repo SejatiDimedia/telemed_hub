@@ -31,6 +31,7 @@ import (
 	"github.com/timurdianradhasejati/telemed_hub/internal/medical_record"
 	"github.com/timurdianradhasejati/telemed_hub/internal/shared"
 	"github.com/timurdianradhasejati/telemed_hub/internal/wallet"
+	"github.com/timurdianradhasejati/telemed_hub/internal/notification"
 	"github.com/timurdianradhasejati/telemed_hub/pkg/logger"
 )
 
@@ -128,17 +129,21 @@ func main() {
 	auditSvc := shared.NewAuditService(dbPool)
 
 	// --- Initialize Modules ---
+	notificationMod := notification.NewModule(dbPool, rdb, cfg, log)
 	walletMod := wallet.NewModule(dbPool, rdb, cfg, log)
 	authMod := auth.NewModule(dbPool, rdb, cfg, log)
 	patientMod := patient.NewModule(dbPool, rdb, cfg, log)
 	doctorMod := doctor.NewModule(dbPool, rdb, cfg, auditSvc, log)
-	appointmentMod := appointment.NewModule(dbPool, cfg, rdb, log, patientMod.Service, doctorMod.Service, walletMod.Service)
+	appointmentMod := appointment.NewModule(dbPool, cfg, rdb, log, patientMod.Service, doctorMod.Service, walletMod.Service, notificationMod.Service)
 	consultationMod := consultation.NewModule(dbPool, rdb, cfg, log, appointmentMod.Service)
 	prescriptionMod := prescription.NewModule(dbPool, rdb, cfg, log, consultationMod.Service, doctorMod.Service, patientMod.Service)
 	inventoryMod := inventory.NewModule(dbPool, rdb, cfg, log)
-	pharmacyMod := pharmacy.NewModule(dbPool, rdb, cfg, log, prescriptionMod.Service, inventoryMod.Service, patientMod.Service, walletMod.Service)
+	pharmacyMod := pharmacy.NewModule(dbPool, rdb, cfg, log, prescriptionMod.Service, inventoryMod.Service, patientMod.Service, walletMod.Service, notificationMod.Service)
 	medicalRecordMod := medical_record.NewModule(dbPool, rdb, cfg, log, patientMod.Service, auditSvc)
 	adminMod := admin.NewModule(dbPool, rdb, cfg, log)
+
+	// Start background workers
+	notificationMod.Start()
 
 	// Resolve setter DI for circular dependency
 	appointmentMod.Service.SetConsultationService(consultationMod.Service)
@@ -156,6 +161,7 @@ func main() {
 		r.Mount("/orders", pharmacyMod.Handler.Routes())
 		r.Mount("/medical-records", medicalRecordMod.Handler.Routes())
 		r.Mount("/admin", adminMod.Handler.Routes())
+		r.Mount("/notifications", notificationMod.Handler.Routes())
 	})
 
 	// --- Start HTTP server with graceful shutdown ---
@@ -187,6 +193,9 @@ func main() {
 		}
 	case sig := <-quit:
 		log.Info("shutting down server", "signal", sig.String())
+
+		// Stop background workers
+		notificationMod.Stop()
 
 		shutdownCtx, shutdownCancel := context.WithTimeout(ctx, cfg.Server.ShutdownTimeout)
 		defer shutdownCancel()
