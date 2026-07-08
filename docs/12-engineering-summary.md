@@ -52,6 +52,7 @@ flowchart LR
 | Sprint 9 (Medical Records & Auditing) | ✅ Completed | Longitudinal medical records CRUD, clinician-specific treatment boundaries, and transparent HIPAA auditing log querying |
 | Sprint 10 (Notification) | ✅ Completed | Asynchronous, durable notification dispatching using Redis Streams, worker pool, and exponential backoff |
 | Sprint 11 (AI Assistant) | ✅ Completed | Symptom triage API with Gemini LLM integration, circuit breaker fallbacks, PHI protection, and inactivity closures |
+| Sprint 12 (Performance) | ✅ Completed | Database index verification pass, mounted Go live pprof endpoints, and concurrent load testing P95 verification |
 
 **All 5 architecture review blockers resolved** (see `architecture_review.md` for original findings).
 

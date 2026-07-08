@@ -136,7 +136,7 @@ Sprints are assumed to be **1–2 weeks** each, part-time pace, consistent with 
 | **Deliverables** | Working triage endpoint with disclaimer, response stored for audit |
 | **Estimated Duration** | 1 week |
 
-## Sprint 12 — Performance
+## Sprint 12 — Performance (✅ Completed)
 
 | | |
 |---|---|

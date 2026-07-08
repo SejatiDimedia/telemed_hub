@@ -121,6 +121,9 @@ func main() {
 	r.Use(middlewareLogger(log))
 	r.Use(middleware.Recoverer)
 
+	// Profiler endpoints
+	r.Mount("/debug", middleware.Profiler())
+
 	// Health check endpoints (no auth required)
 	healthHandler := healthcheck.NewHandler(dbPool, rdb, minioClient, log)
 	r.Get("/healthz", healthHandler.Healthz)
