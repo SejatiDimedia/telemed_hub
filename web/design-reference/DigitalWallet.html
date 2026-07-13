@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Digital Wallet &amp; Billing Center | TeleMedHub</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,600;0,700;1,400&amp;family=Playfair+Display:ital,wght@0,600;0,700;1,600&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#72d6db",
+                        "outline-variant": "#bdc9c9",
+                        "secondary-fixed": "#71f8e4",
+                        "on-tertiary-fixed-variant": "#00497a",
+                        "secondary-fixed-dim": "#4fdbc8",
+                        "on-tertiary-fixed": "#001d35",
+                        "surface-container": "#e7eeff",
+                        "tertiary-fixed": "#d0e4ff",
+                        "on-primary-container": "#f3ffff",
+                        "on-secondary": "#ffffff",
+                        "surface": "#f9f9ff",
+                        "primary-container": "#008286",
+                        "outline": "#6e797a",
+                        "surface-dim": "#cfdaf2",
+                        "surface-container-highest": "#d8e3fb",
+                        "on-secondary-fixed": "#00201c",
+                        "on-background": "#111c2d",
+                        "surface-container-high": "#dee8ff",
+                        "on-primary-fixed": "#002021",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#005f9d",
+                        "surface-variant": "#d8e3fb",
+                        "on-tertiary-container": "#fdfcff",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#ecf1ff",
+                        "tertiary-container": "#0079c4",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#111c2d",
+                        "on-secondary-fixed-variant": "#005048",
+                        "secondary": "#006b5f",
+                        "tertiary-fixed-dim": "#9ccaff",
+                        "surface-container-low": "#f0f3ff",
+                        "surface-tint": "#00696d",
+                        "error": "#ba1a1a",
+                        "inverse-surface": "#263143",
+                        "secondary-container": "#6df5e1",
+                        "on-surface-variant": "#3d4949",
+                        "surface-bright": "#f9f9ff",
+                        "on-secondary-container": "#006f64",
+                        "background": "#f9f9ff",
+                        "primary": "#00676a",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#72d6db",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#8ff2f7",
+                        "on-primary-fixed-variant": "#004f52"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-padding": "64px",
+                        "gutter": "24px",
+                        "container-margin": "32px",
+                        "card-padding": "24px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Be Vietnam Pro"],
+                        "display-lg": ["Playfair Display"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "headline-lg": ["Playfair Display"],
+                        "label-md": ["Be Vietnam Pro"],
+                        "headline-md": ["Playfair Display"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "body-sm": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        .shadow-level-1 {
+            box-shadow: 0 4px 20px rgba(11, 138, 143, 0.08);
+        }
+
+        .shadow-level-2 {
+            box-shadow: 0 8px 30px rgba(11, 138, 143, 0.12);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #bdc9c9;
+            border-radius: 10px;
+        }
+
+        .glass-overlay {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+    <!-- SideNavBar (Shared Component) -->
+    <aside
+        class="w-[280px] h-screen fixed left-0 top-0 overflow-y-auto bg-surface dark:bg-inverse-surface shadow-sm dark:shadow-none flex flex-col py-8 px-4 gap-6 z-50">
+        <div class="px-4">
+            <span
+                class="text-headline-md font-headline-md font-bold text-primary dark:text-primary-fixed-dim">TeleMedHub</span>
+            <p class="text-label-md font-label-md text-on-surface-variant opacity-70">Clinical Command Center</p>
+        </div>
+        <button
+            class="mx-4 bg-primary text-on-primary py-4 px-6 rounded-[16px] flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-[0.98]">
+            <span class="material-symbols-outlined">add</span>
+            <span class="font-label-md">New Teleconsultation</span>
+        </button>
+        <nav class="flex flex-col gap-1">
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200"
+                href="#">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span class="font-label-md">Dashboard</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200"
+                href="#">
+                <span class="material-symbols-outlined">group</span>
+                <span class="font-label-md">Patients</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200"
+                href="#">
+                <span class="material-symbols-outlined">medical_services</span>
+                <span class="font-label-md">Doctors</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200"
+                href="#">
+                <span class="material-symbols-outlined">event</span>
+                <span class="font-label-md">Appointments</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200"
+                href="#">
+                <span class="material-symbols-outlined">local_pharmacy</span>
+                <span class="font-label-md">Pharmacy</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200"
+                href="#">
+                <span class="material-symbols-outlined">smart_toy</span>
+                <span class="font-label-md">AI Assistant</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200"
+                href="#">
+                <span class="material-symbols-outlined">folder_shared</span>
+                <span class="font-label-md">Medical Records</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200"
+                href="#">
+                <span class="material-symbols-outlined">inventory_2</span>
+                <span class="font-label-md">Inventory</span>
+            </a>
+            <!-- Active Tab: Wallet -->
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary dark:text-primary-fixed-dim font-bold border-r-4 border-primary bg-surface-container-low transition-colors duration-200"
+                href="#">
+                <span class="material-symbols-outlined"
+                    style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+                <span class="font-label-md">Wallet</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200"
+                href="#">
+                <span class="material-symbols-outlined">notifications</span>
+                <span class="font-label-md">Notifications</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200"
+                href="#">
+                <span class="material-symbols-outlined">settings</span>
+                <span class="font-label-md">Settings</span>
+            </a>
+        </nav>
+        <div class="mt-auto px-4 py-4 bg-surface-container rounded-[20px] flex items-center gap-3">
+            <img class="w-10 h-10 rounded-full object-cover border-2 border-white"
+                data-alt="A professional portrait of an administrator in a clinical setting, soft natural lighting, high-end medical office background, muted teal and white color palette."
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAC5wYIBtK0IbM9bcY6gmoR3iYKsE62I7XFVcXi1gbBlrq2amIFO9PjFQHvLAK7cbI6bAQINo4cDKU4ZAakHLB2Uoj2YhYVC0LjObiOo-va9Rc8IC-Rub3kL-vUT7u8REE6RekV0j6qz1EZ0MpTsjbQmi-fF1buJfAPmYxmS8cew_t_IV0k8ewSCmSesbLdmwdEn7vlpuyAZhn-lDMoic4Q2WzHY2cs1_rODlHC4JNP4M4hXOHAVB253CsOxeC0JxDFjegk5TKzHwE" />
+            <div class="overflow-hidden">
+                <p class="text-label-md font-bold text-on-surface truncate">Admin Profile</p>
+                <p class="text-[10px] text-on-surface-variant uppercase tracking-wider">TeleMedHub Admin</p>
+            </div>
+        </div>
+    </aside>
+    <!-- TopAppBar (Shared Component) -->
+    <header
+        class="h-20 w-full fixed top-0 z-40 bg-background/80 backdrop-blur-md flex items-center justify-between pl-[304px] pr-gutter">
+        <div class="flex-1 max-w-xl">
+            <div class="relative flex items-center">
+                <span class="material-symbols-outlined absolute left-4 text-outline">search</span>
+                <input
+                    class="w-full bg-white border border-outline-variant rounded-[16px] py-2.5 pl-12 pr-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                    placeholder="Search invoices, patients or claims..." type="text" />
+            </div>
+        </div>
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-2">
+                <button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">help</span>
+                </button>
+                <button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">dark_mode</span>
+                </button>
+            </div>
+            <div class="h-8 w-px bg-outline-variant"></div>
+            <div class="flex items-center gap-3">
+                <span class="font-label-md text-on-surface font-bold">Dr. Sarah Jenkins</span>
+                <div
+                    class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-sm">
+                    SJ</div>
+            </div>
+        </div>
+    </header>
+    <!-- Main Content -->
+    <main class="ml-[280px] pt-24 px-gutter pb-section-padding min-h-screen">
+        <!-- Header Section -->
+        <div class="flex items-end justify-between mb-8">
+            <div>
+                <h1 class="text-display-lg font-headline-lg text-primary mb-2">Billing Center</h1>
+                <p class="text-body-lg text-on-surface-variant max-w-2xl">Manage your clinical revenue cycle, track
+                    insurance submissions, and monitor your digital wallet status in one secure location.</p>
+            </div>
+            <div class="flex gap-4">
+                <button
+                    class="bg-white border-1.5 border-primary text-primary px-6 py-3.5 rounded-[16px] font-label-md flex items-center gap-2 hover:bg-surface-container transition-all">
+                    <span class="material-symbols-outlined">ios_share</span>
+                    Export Financials
+                </button>
+                <button
+                    class="bg-primary text-on-primary px-6 py-3.5 rounded-[16px] font-label-md flex items-center gap-2 shadow-level-1 hover:shadow-level-2 transition-all">
+                    <span class="material-symbols-outlined">receipt_long</span>
+                    Generate Invoice
+                </button>
+            </div>
+        </div>
+        <!-- Financial Overview Bento Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            <!-- Card 1 -->
+            <div
+                class="bg-white p-card-padding rounded-[20px] shadow-level-1 flex flex-col justify-between hover:shadow-level-2 transition-shadow group">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-3 bg-primary-fixed rounded-xl text-primary">
+                        <span class="material-symbols-outlined">payments</span>
+                    </div>
+                    <span class="text-secondary font-label-md">+12.4%</span>
+                </div>
+                <div>
+                    <p class="text-label-md text-on-surface-variant mb-1">Total Revenue</p>
+                    <h3 class="text-headline-md font-headline-md text-on-surface">$142,850.00</h3>
+                </div>
+            </div>
+            <!-- Card 2 -->
+            <div
+                class="bg-white p-card-padding rounded-[20px] shadow-level-1 flex flex-col justify-between hover:shadow-level-2 transition-shadow">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-3 bg-surface-container rounded-xl text-tertiary">
+                        <span class="material-symbols-outlined">pending_actions</span>
+                    </div>
+                    <span class="text-error font-label-md">8 Overdue</span>
+                </div>
+                <div>
+                    <p class="text-label-md text-on-surface-variant mb-1">Pending Claims</p>
+                    <h3 class="text-headline-md font-headline-md text-on-surface">$24,110.00</h3>
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div
+                class="bg-white p-card-padding rounded-[20px] shadow-level-1 flex flex-col justify-between hover:shadow-level-2 transition-shadow">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-3 bg-error-container rounded-xl text-error">
+                        <span class="material-symbols-outlined">error</span>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-label-md text-on-surface-variant mb-1">Outstanding Invoices</p>
+                    <h3 class="text-headline-md font-headline-md text-on-surface">$8,450.00</h3>
+                </div>
+            </div>
+            <!-- Card 4 -->
+            <div
+                class="bg-primary p-card-padding rounded-[20px] shadow-level-1 flex flex-col justify-between text-on-primary">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-3 bg-on-primary/10 rounded-xl">
+                        <span class="material-symbols-outlined">schedule</span>
+                    </div>
+                    <span class="text-primary-fixed-dim font-label-md">Next: July 15</span>
+                </div>
+                <div>
+                    <p class="text-label-md opacity-80 mb-1">Payout Schedule</p>
+                    <h3 class="text-headline-md font-headline-md">$112,400.00</h3>
+                </div>
+            </div>
+        </div>
+        <!-- Charts & Insurance Tracking -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+            <!-- Revenue Trend Chart Placeholder -->
+            <div class="lg:col-span-2 bg-white p-8 rounded-[24px] shadow-level-1">
+                <div class="flex items-center justify-between mb-8">
+                    <h4 class="text-headline-md font-headline-md">Revenue &amp; Collections</h4>
+                    <div class="flex gap-2">
+                        <button class="px-4 py-2 rounded-full bg-surface-container text-primary text-label-sm">30
+                            Days</button>
+                        <button class="px-4 py-2 rounded-full text-on-surface-variant text-label-sm">90 Days</button>
+                    </div>
+                </div>
+                <div class="h-64 w-full relative">
+                    <!-- Abstract Visualization of a Chart -->
+                    <div class="absolute inset-0 flex items-end gap-2 pb-2">
+                        <div class="flex-1 bg-surface-container rounded-t-lg h-[40%]" title="Day 1"></div>
+                        <div class="flex-1 bg-primary-container/40 rounded-t-lg h-[60%]" title="Day 2"></div>
+                        <div class="flex-1 bg-surface-container rounded-t-lg h-[45%]" title="Day 3"></div>
+                        <div class="flex-1 bg-primary-container rounded-t-lg h-[85%]" title="Day 4"></div>
+                        <div class="flex-1 bg-surface-container rounded-t-lg h-[55%]" title="Day 5"></div>
+                        <div class="flex-1 bg-primary-container/60 rounded-t-lg h-[70%]" title="Day 6"></div>
+                        <div class="flex-1 bg-primary-container rounded-t-lg h-[95%]" title="Day 7"></div>
+                        <div class="flex-1 bg-surface-container rounded-t-lg h-[35%]" title="Day 8"></div>
+                        <div class="flex-1 bg-surface-container rounded-t-lg h-[50%]" title="Day 9"></div>
+                        <div class="flex-1 bg-primary-container/50 rounded-t-lg h-[65%]" title="Day 10"></div>
+                        <div class="flex-1 bg-primary-container rounded-t-lg h-[80%]" title="Day 11"></div>
+                        <div class="flex-1 bg-surface-container rounded-t-lg h-[40%]" title="Day 12"></div>
+                    </div>
+                    <!-- Axis Line -->
+                    <div class="absolute bottom-0 left-0 w-full h-0.5 bg-outline-variant opacity-30"></div>
+                </div>
+                <div class="mt-6 flex gap-6">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-primary-container"></span>
+                        <span class="text-body-sm text-on-surface-variant">Payments Collected</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-surface-container"></span>
+                        <span class="text-body-sm text-on-surface-variant">Billed Amount</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Insurance Claims Tracker -->
+            <div class="bg-white p-8 rounded-[24px] shadow-level-1">
+                <h4 class="text-headline-md font-headline-md mb-6">Claims Status</h4>
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-10 bg-primary-container rounded-full"></div>
+                            <div>
+                                <p class="text-label-md font-bold">Submitted</p>
+                                <p class="text-body-sm text-on-surface-variant">124 claims this week</p>
+                            </div>
+                        </div>
+                        <span class="text-body-md font-bold">42%</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-10 bg-tertiary-container rounded-full"></div>
+                            <div>
+                                <p class="text-label-md font-bold">Under Review</p>
+                                <p class="text-body-sm text-on-surface-variant">45 processing</p>
+                            </div>
+                        </div>
+                        <span class="text-body-md font-bold">28%</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-10 bg-secondary rounded-full"></div>
+                            <div>
+                                <p class="text-label-md font-bold">Approved</p>
+                                <p class="text-body-sm text-on-surface-variant">Ready for payout</p>
+                            </div>
+                        </div>
+                        <span class="text-body-md font-bold">22%</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-10 bg-error rounded-full"></div>
+                            <div>
+                                <p class="text-label-md font-bold">Denied</p>
+                                <p class="text-body-sm text-on-surface-variant">Needs correction</p>
+                            </div>
+                        </div>
+                        <span class="text-body-md font-bold">8%</span>
+                    </div>
+                </div>
+                <button
+                    class="w-full mt-8 py-3 rounded-xl border border-outline-variant text-label-md hover:bg-surface transition-colors">
+                    View All Claims
+                </button>
+            </div>
+        </div>
+        <!-- Transaction History Table -->
+        <div class="bg-white rounded-[24px] shadow-level-1 overflow-hidden">
+            <div class="p-8 border-b border-outline-variant/30 flex items-center justify-between">
+                <h4 class="text-headline-md font-headline-md">Recent Transactions</h4>
+                <div class="flex gap-3">
+                    <div class="relative">
+                        <button
+                            class="px-4 py-2 bg-surface rounded-lg border border-outline-variant text-label-md flex items-center gap-2">
+                            Filter Status
+                            <span class="material-symbols-outlined text-sm">expand_more</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-surface text-on-surface-variant text-label-md uppercase tracking-wider">
+                        <tr>
+                            <th class="px-8 py-4 font-bold">Patient Name</th>
+                            <th class="px-8 py-4 font-bold">Service Date</th>
+                            <th class="px-8 py-4 font-bold">Amount</th>
+                            <th class="px-8 py-4 font-bold">Status</th>
+                            <th class="px-8 py-4 font-bold">Method</th>
+                            <th class="px-8 py-4 font-bold">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant/20">
+                        <tr class="hover:bg-surface-container-low transition-colors group">
+                            <td class="px-8 py-5">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center font-bold text-xs">
+                                        AW</div>
+                                    <span class="font-label-md text-on-surface">Amara Williams</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-5 text-body-sm text-on-surface-variant">Jun 24, 2024</td>
+                            <td class="px-8 py-5 font-bold text-on-surface">$245.00</td>
+                            <td class="px-8 py-5">
+                                <span
+                                    class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Paid</span>
+                            </td>
+                            <td class="px-8 py-5 text-body-sm text-on-surface-variant">Visa **** 4242</td>
+                            <td class="px-8 py-5">
+                                <button class="text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span class="material-symbols-outlined">receipt</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-surface-container-low transition-colors group">
+                            <td class="px-8 py-5">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-bold text-xs">
+                                        JR</div>
+                                    <span class="font-label-md text-on-surface">James Rodriguez</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-5 text-body-sm text-on-surface-variant">Jun 23, 2024</td>
+                            <td class="px-8 py-5 font-bold text-on-surface">$120.00</td>
+                            <td class="px-8 py-5">
+                                <span
+                                    class="px-3 py-1 bg-surface-container-high text-on-surface-variant rounded-full text-[10px] font-bold uppercase tracking-wider">Pending</span>
+                            </td>
+                            <td class="px-8 py-5 text-body-sm text-on-surface-variant">Insurance (Aetna)</td>
+                            <td class="px-8 py-5">
+                                <button class="text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span class="material-symbols-outlined">notifications_active</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-surface-container-low transition-colors group">
+                            <td class="px-8 py-5">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-error-container text-on-error-container flex items-center justify-center font-bold text-xs">
+                                        EK</div>
+                                    <span class="font-label-md text-on-surface">Elena Kostic</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-5 text-body-sm text-on-surface-variant">Jun 21, 2024</td>
+                            <td class="px-8 py-5 font-bold text-on-surface">$850.00</td>
+                            <td class="px-8 py-5">
+                                <span
+                                    class="px-3 py-1 bg-error-container text-on-error-container rounded-full text-[10px] font-bold uppercase tracking-wider">Overdue</span>
+                            </td>
+                            <td class="px-8 py-5 text-body-sm text-on-surface-variant">Direct Billing</td>
+                            <td class="px-8 py-5">
+                                <button class="text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span class="material-symbols-outlined">send</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-surface-container-low transition-colors group">
+                            <td class="px-8 py-5">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center font-bold text-xs">
+                                        LC</div>
+                                    <span class="font-label-md text-on-surface">Liam Chang</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-5 text-body-sm text-on-surface-variant">Jun 20, 2024</td>
+                            <td class="px-8 py-5 font-bold text-on-surface">$310.00</td>
+                            <td class="px-8 py-5">
+                                <span
+                                    class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Paid</span>
+                            </td>
+                            <td class="px-8 py-5 text-body-sm text-on-surface-variant">Mastercard **** 8812</td>
+                            <td class="px-8 py-5">
+                                <button class="text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span class="material-symbols-outlined">receipt</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-6 bg-surface text-center">
+                <button class="text-primary font-label-md hover:underline">View Full Transaction History</button>
+            </div>
+        </div>
+        <!-- Atmospheric Script for subtle UI hover effects -->
+        <script>
+            document.querySelectorAll('.shadow-level-1').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.classList.remove('shadow-level-1');
+                    card.classList.add('shadow-level-2');
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.classList.remove('shadow-level-2');
+                    card.classList.add('shadow-level-1');
+                });
+            });
+        </script>
+    </main>
+    <!-- Payout Notification FAB (Specific Contextual Usage) -->
+    <div class="fixed bottom-8 right-8 z-50">
+        <button
+            class="bg-tertiary-container text-on-tertiary-container w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-transform group">
+            <span class="material-symbols-outlined">support_agent</span>
+            <div
+                class="absolute right-16 bg-inverse-surface text-white px-4 py-2 rounded-lg text-body-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                Financial Support Live
+            </div>
+        </button>
+    </div>
+</body>
+
+</html>

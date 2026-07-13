@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Medical Records Archive | TeleMedHub</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;family=Playfair+Display:wght@600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#0079c4",
+                        "primary": "#00676a",
+                        "on-tertiary-container": "#fdfcff",
+                        "tertiary": "#005f9d",
+                        "tertiary-fixed": "#d0e4ff",
+                        "on-secondary-container": "#006f64",
+                        "surface-tint": "#00696d",
+                        "inverse-on-surface": "#ecf1ff",
+                        "surface-dim": "#cfdaf2",
+                        "surface-container-low": "#f0f3ff",
+                        "secondary-fixed": "#71f8e4",
+                        "on-primary-container": "#f3ffff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#6df5e1",
+                        "on-surface-variant": "#3d4949",
+                        "on-primary-fixed": "#002021",
+                        "inverse-surface": "#263143",
+                        "on-secondary-fixed": "#00201c",
+                        "surface-container-high": "#dee8ff",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#72d6db",
+                        "surface-container": "#e7eeff",
+                        "primary-fixed": "#8ff2f7",
+                        "on-secondary-fixed-variant": "#005048",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#4fdbc8",
+                        "on-tertiary-fixed": "#001d35",
+                        "secondary": "#006b5f",
+                        "surface-bright": "#f9f9ff",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#008286",
+                        "on-tertiary-fixed-variant": "#00497a",
+                        "on-primary-fixed-variant": "#004f52",
+                        "surface-variant": "#d8e3fb",
+                        "surface": "#f9f9ff",
+                        "surface-container-highest": "#d8e3fb",
+                        "on-background": "#111c2d",
+                        "background": "#f9f9ff",
+                        "on-surface": "#111c2d",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#9ccaff",
+                        "primary-fixed-dim": "#72d6db",
+                        "error": "#ba1a1a",
+                        "outline-variant": "#bdc9c9",
+                        "outline": "#6e797a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "base": "8px",
+                        "container-margin": "32px",
+                        "card-padding": "24px",
+                        "section-padding": "64px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Be Vietnam Pro"],
+                        "label-md": ["Be Vietnam Pro"],
+                        "headline-md": ["Playfair Display"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "headline-lg": ["Playfair Display"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .clinical-shadow {
+            box-shadow: 0 4px 20px rgba(11, 138, 143, 0.08);
+        }
+
+        .clinical-shadow-hover {
+            box-shadow: 0 8px 30px rgba(11, 138, 143, 0.12);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #00676a33;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00676a66;
+        }
+    </style>
+</head>
+
+<body class="bg-background text-on-surface font-body-md overflow-hidden">
+    <!-- SideNavBar (Shared Component) -->
+    <aside
+        class="w-[280px] h-screen fixed left-0 top-0 overflow-y-auto bg-surface dark:bg-inverse-surface shadow-sm dark:shadow-none flex flex-col py-8 px-4 gap-6 z-50 border-r border-outline-variant/30">
+        <div class="px-4">
+            <h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary-fixed-dim">TeleMedHub
+            </h1>
+            <p class="text-label-sm text-on-surface-variant/70 uppercase tracking-widest mt-1">Clinical Command Center
+            </p>
+        </div>
+        <button
+            class="mx-4 flex items-center justify-center gap-2 bg-primary text-on-primary py-4 px-6 rounded-2xl font-label-md transition-all hover:opacity-90 active:scale-[0.98]">
+            <span class="material-symbols-outlined">add_circle</span>
+            New Teleconsultation
+        </button>
+        <nav class="flex flex-col gap-1 mt-4">
+            <!-- Active State determined: Medical Records -->
+            <a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-200 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-low hover:text-primary"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                <span class="font-label-md">Dashboard</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-200 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-low hover:text-primary"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="group">group</span>
+                <span class="font-label-md">Patients</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-200 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-low hover:text-primary"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+                <span class="font-label-md">Doctors</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-200 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-low hover:text-primary"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="event">event</span>
+                <span class="font-label-md">Appointments</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-200 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-low hover:text-primary"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="local_pharmacy">local_pharmacy</span>
+                <span class="font-label-md">Pharmacy</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-200 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-low hover:text-primary"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+                <span class="font-label-md">AI Assistant</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 rounded-xl text-primary dark:text-primary-fixed-dim font-bold border-r-4 border-primary dark:border-primary-fixed-dim bg-surface-container-low"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="folder_shared">folder_shared</span>
+                <span class="font-label-md">Medical Records</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-200 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-low hover:text-primary"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+                <span class="font-label-md">Inventory</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-200 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-low hover:text-primary"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+                <span class="font-label-md">Wallet</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-200 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-low hover:text-primary"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+                <span class="font-label-md">Notifications</span>
+            </a>
+            <a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-200 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-low hover:text-primary"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="settings">settings</span>
+                <span class="font-label-md">Settings</span>
+            </a>
+        </nav>
+    </aside>
+    <!-- TopAppBar (Shared Component) -->
+    <header
+        class="h-20 w-full fixed top-0 z-40 bg-background/80 backdrop-blur-md flex items-center justify-between pl-[304px] pr-gutter border-b border-outline-variant/10">
+        <div class="flex items-center gap-4 flex-1">
+            <div class="relative max-w-md w-full">
+                <span
+                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                <input
+                    class="w-full pl-12 pr-4 py-2 bg-surface-container border-none rounded-full text-body-sm focus:ring-2 focus:ring-primary/20 transition-all"
+                    placeholder="Global search patient archives..." type="text" />
+            </div>
+        </div>
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-2">
+                <button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">help</span>
+                </button>
+                <button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">dark_mode</span>
+                </button>
+            </div>
+            <div class="h-8 w-px bg-outline-variant/30 mx-2"></div>
+            <div class="flex items-center gap-3">
+                <div class="text-right">
+                    <p class="font-label-md text-on-surface">Dr. Sarah Jenkins</p>
+                    <p class="text-label-sm text-on-surface-variant/70">Chief Medical Officer</p>
+                </div>
+                <div class="w-10 h-10 rounded-full border-2 border-primary/20 overflow-hidden">
+                    <img class="w-full h-full object-cover"
+                        data-alt="Professional headshot of Dr. Sarah Jenkins, a female physician with a warm expression wearing a clinical white coat. The background is a clean, modern medical office with soft blue and teal lighting that matches the TeleMedHub brand aesthetic. The lighting is bright and crisp, highlighting her authority and trustworthiness."
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5_ajbMVDv2C4c2RypFLljdvBSnadAFbmSAhgQI6gU_zeaIBNDwTxmgpqUKVhqncd1KXFbkidx0kT_UbqvuESTLkM1Z2949QnPFn6xwj_sVDndlJREMOIU2jW9L0aB2HI5RPDxN8-hdsR8vRVhvKHEMIN7Nkc2b_ocYVHfxrxuYvyMZ6AcMulCIxgy4EKO_matJXzp26xdAiUVl0WfDWupkKG5lTsSwrMREyxG-f3DE9halacGNgHnsVzMyvGwydQ62VGf0VdibDA" />
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Main Content Layout -->
+    <main class="ml-[280px] pt-20 h-screen overflow-hidden flex flex-col bg-background">
+        <!-- Header & Top Filter Section -->
+        <section class="px-gutter py-8 shrink-0">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                    <h2 class="font-headline-lg text-headline-lg text-primary">Medical Records Archive</h2>
+                    <p class="text-body-md text-on-surface-variant mt-2 max-w-2xl">Secure, enterprise-grade repository
+                        for all clinical documentation, diagnostic imaging, and pharmaceutical history.</p>
+                </div>
+                <div class="flex gap-3">
+                    <button
+                        class="flex items-center gap-2 px-6 py-3 border-1.5 border-primary text-primary rounded-2xl font-label-md hover:bg-primary/5 transition-all">
+                        <span class="material-symbols-outlined">filter_list</span>
+                        Advanced Filters
+                    </button>
+                    <button
+                        class="flex items-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-2xl font-label-md clinical-shadow hover:opacity-90 active:scale-95 transition-all">
+                        <span class="material-symbols-outlined">upload_file</span>
+                        Upload New Record
+                    </button>
+                </div>
+            </div>
+            <!-- Pinned / Recent Records Carousel -->
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Pinned Item 1 -->
+                <div
+                    class="bg-surface p-4 rounded-[20px] clinical-shadow border border-outline-variant/10 flex items-start gap-4 hover:clinical-shadow-hover transition-all cursor-pointer group">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-tertiary-container/10 flex items-center justify-center text-tertiary shrink-0">
+                        <span class="material-symbols-outlined"
+                            style="font-variation-settings: 'FILL' 1;">lab_research</span>
+                    </div>
+                    <div class="overflow-hidden">
+                        <p class="text-label-sm text-tertiary font-bold uppercase tracking-tighter">Pinned | Lab Report
+                        </p>
+                        <p class="font-body-md text-on-surface truncate mt-1">James Harrison - Blood Panel</p>
+                        <p class="text-label-sm text-on-surface-variant mt-1 italic">Last viewed 12m ago</p>
+                    </div>
+                </div>
+                <!-- Pinned Item 2 -->
+                <div
+                    class="bg-surface p-4 rounded-[20px] clinical-shadow border border-outline-variant/10 flex items-start gap-4 hover:clinical-shadow-hover transition-all cursor-pointer group">
+                    <div
+                        class="w-12 h-12 rounded-xl bg-secondary-container/20 flex items-center justify-center text-secondary shrink-0">
+                        <span class="material-symbols-outlined"
+                            style="font-variation-settings: 'FILL' 1;">radiology</span>
+                    </div>
+                    <div class="overflow-hidden">
+                        <p class="text-label-sm text-secondary font-bold uppercase tracking-tighter">Pinned | Imaging
+                        </p>
+                        <p class="font-body-md text-on-surface truncate mt-1">Elena Rodriguez - MRI Brain</p>
+                        <p class="text-label-sm text-on-surface-variant mt-1 italic">Last viewed 1h ago</p>
+                    </div>
+                </div>
+                <!-- Stats Summary -->
+                <div
+                    class="col-span-2 bg-[#F0F9FA] p-4 rounded-[20px] border border-primary/10 flex items-center justify-around">
+                    <div class="text-center">
+                        <p class="text-display-lg text-primary font-headline-lg leading-none">12.4k</p>
+                        <p class="text-label-sm text-on-surface-variant uppercase mt-2">Total Archives</p>
+                    </div>
+                    <div class="h-12 w-px bg-primary/20"></div>
+                    <div class="text-center">
+                        <p class="text-display-lg text-secondary font-headline-lg leading-none">148</p>
+                        <p class="text-label-sm text-on-surface-variant uppercase mt-2">Pending Review</p>
+                    </div>
+                    <div class="h-12 w-px bg-primary/20"></div>
+                    <div class="text-center">
+                        <p class="text-display-lg text-tertiary font-headline-lg leading-none">99.9%</p>
+                        <p class="text-label-sm text-on-surface-variant uppercase mt-2">Data Integrity</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Main Workspace: Table + Sidebar -->
+        <section class="flex-1 px-gutter pb-gutter min-h-0 flex gap-6">
+            <!-- Table Container -->
+            <div
+                class="flex-1 bg-surface rounded-[24px] clinical-shadow border border-outline-variant/20 flex flex-col overflow-hidden">
+                <!-- Search & Filters -->
+                <div class="p-6 border-b border-outline-variant/20 flex items-center gap-4">
+                    <div class="relative flex-1">
+                        <span
+                            class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                        <input
+                            class="w-full pl-12 pr-4 py-3 bg-background border-outline-variant/30 border rounded-xl text-body-sm focus:ring-2 focus:ring-primary/20 transition-all"
+                            placeholder="Search by Record ID, Patient, or Doctor..." type="text" />
+                    </div>
+                    <select
+                        class="bg-background border-outline-variant/30 rounded-xl px-4 py-3 font-label-md text-on-surface-variant focus:ring-primary/20 min-w-[160px]">
+                        <option>All Record Types</option>
+                        <option>Lab Results</option>
+                        <option>Imaging</option>
+                        <option>Prescriptions</option>
+                        <option>Clinical Notes</option>
+                    </select>
+                    <select
+                        class="bg-background border-outline-variant/30 rounded-xl px-4 py-3 font-label-md text-on-surface-variant focus:ring-primary/20 min-w-[160px]">
+                        <option>Sort: Newest First</option>
+                        <option>Sort: Oldest First</option>
+                        <option>Sort: Patient A-Z</option>
+                    </select>
+                </div>
+                <!-- Table Header -->
+                <div class="overflow-y-auto flex-1">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="sticky top-0 bg-surface z-10">
+                            <tr class="border-b border-outline-variant/10">
+                                <th
+                                    class="px-6 py-4 font-label-md text-on-surface-variant uppercase text-[11px] tracking-widest">
+                                    Record ID</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-on-surface-variant uppercase text-[11px] tracking-widest">
+                                    Patient Name</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-on-surface-variant uppercase text-[11px] tracking-widest">
+                                    Record Type</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-on-surface-variant uppercase text-[11px] tracking-widest">
+                                    Date Created</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-on-surface-variant uppercase text-[11px] tracking-widest">
+                                    Signed By</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-on-surface-variant uppercase text-[11px] tracking-widest">
+                                    Status</th>
+                                <th
+                                    class="px-6 py-4 font-label-md text-on-surface-variant uppercase text-[11px] tracking-widest">
+                                    Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-outline-variant/5">
+                            <!-- Row 1 -->
+                            <tr class="hover:bg-surface-container-lowest transition-colors group cursor-pointer"
+                                onclick="updateSidebar('REC-88421', 'James Harrison', 'Lab Result', 'Complete Blood Count (CBC)', 'Jan 24, 2024', 'Dr. Michael Chen', 'Finalized')">
+                                <td class="px-6 py-4 text-label-md text-on-surface-variant">#REC-88421</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-surface-container overflow-hidden">
+                                            <img class="w-full h-full object-cover"
+                                                data-alt="Portrait of an elderly gentleman with kind eyes and silver hair, representing a patient profile. The lighting is soft and clinical, focusing on clarity and warmth, set against a blurred medical clinic background with TeleMedHub teal accents."
+                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUTutA-QHNNnqAYhP-6bdLIvDl86NDtrwGEEZKuXgA6OJ05zKr7VgrY6r3DUZFwMeSnQznXHC0IFPL2G9gdcEzdF8WhckLS9XdlCs-Z0RJOp1_bPyIl7aRF85gR2CwTRsvfNxxpC4CL-DMsoAqJZkuQX0X1cbiFQcRFkJ2_8v6SPQe2OCOQhqh76uq7kyDQs3FB5N0tu90x1dpL0qE9XckDyrqp1bbZ708dpahn3A6SD70oX9aA2S41945WMwMrgJKqm8GfPLRP5I" />
+                                        </div>
+                                        <span class="font-label-md text-on-surface">James Harrison</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="material-symbols-outlined text-tertiary text-[20px]">lab_research</span>
+                                        <span class="text-body-sm">Lab Report</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-body-sm text-on-surface-variant">Jan 24, 2024</td>
+                                <td class="px-6 py-4 text-body-sm">Dr. Michael Chen</td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="px-3 py-1 rounded-full bg-secondary-container/20 text-secondary text-[11px] font-bold uppercase tracking-tight">Finalized</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div
+                                        class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button class="p-2 hover:bg-primary/10 text-primary rounded-lg"
+                                            title="View PDF"><span
+                                                class="material-symbols-outlined">visibility</span></button>
+                                        <button class="p-2 hover:bg-primary/10 text-primary rounded-lg"
+                                            title="Download"><span
+                                                class="material-symbols-outlined">download</span></button>
+                                        <button class="p-2 hover:bg-primary/10 text-primary rounded-lg"
+                                            title="Audit Trail"><span
+                                                class="material-symbols-outlined">history</span></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Row 2 -->
+                            <tr class="hover:bg-surface-container-lowest transition-colors group cursor-pointer"
+                                onclick="updateSidebar('REC-88419', 'Elena Rodriguez', 'Imaging', 'MRI Brain with Contrast', 'Jan 23, 2024', 'Dr. Sarah Jenkins', 'Pending Review')">
+                                <td class="px-6 py-4 text-label-md text-on-surface-variant">#REC-88419</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-surface-container overflow-hidden">
+                                            <img class="w-full h-full object-cover"
+                                                data-alt="Portrait of a young adult female patient with a confident smile, representing a diverse background. The image is bright and professional, utilizing a shallow depth of field to keep the focus on her face, with a clean laboratory setting in the background featuring soft teal tones."
+                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuChMRmkM9tRT6jeL7GdXjWdaTGk6f8SPJsY3E1uyJ9zKRnwv0x2GKqUsSHvVea2LXyF2xVQYX-xjmQKSsH8U31e1Xquko-eRz4B6TJUPq4-OPAjqOLck3j_ZV9_uhLswsAeajQBGWLvhK9s_PrIs1_MV9-cdVovy-Gw6t9K1UHY2RBK9vwaEjbtuWLsyU62T2yNGAxVv-Sk4VpB3egb2DzH3h_qtm8L2SfWcfah7rY2Gw5yn2_m31rORRvoNC_JAVQrI9DerrhiK5I" />
+                                        </div>
+                                        <span class="font-label-md text-on-surface">Elena Rodriguez</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="material-symbols-outlined text-secondary text-[20px]">radiology</span>
+                                        <span class="text-body-sm">Imaging</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-body-sm text-on-surface-variant">Jan 23, 2024</td>
+                                <td class="px-6 py-4 text-body-sm">Dr. Sarah Jenkins</td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="px-3 py-1 rounded-full bg-surface-variant/40 text-outline text-[11px] font-bold uppercase tracking-tight">Pending
+                                        Review</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div
+                                        class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button class="p-2 hover:bg-primary/10 text-primary rounded-lg"
+                                            title="View PDF"><span
+                                                class="material-symbols-outlined">visibility</span></button>
+                                        <button class="p-2 hover:bg-primary/10 text-primary rounded-lg"
+                                            title="Download"><span
+                                                class="material-symbols-outlined">download</span></button>
+                                        <button class="p-2 hover:bg-primary/10 text-primary rounded-lg"
+                                            title="Audit Trail"><span
+                                                class="material-symbols-outlined">history</span></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Row 3 -->
+                            <tr class="hover:bg-surface-container-lowest transition-colors group cursor-pointer"
+                                onclick="updateSidebar('REC-88390', 'Robert Thompson', 'Prescription', 'Anti-Hypertensive Protocol', 'Jan 22, 2024', 'Dr. Michael Chen', 'Finalized')">
+                                <td class="px-6 py-4 text-label-md text-on-surface-variant">#REC-88390</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-surface-container overflow-hidden">
+                                            <img class="w-full h-full object-cover"
+                                                data-alt="Close up portrait of a middle-aged male patient with a serene expression. The lighting is natural and crisp, highlighting his features against a minimalist hospital corridor that feels calm and technologically sophisticated. The color palette is driven by whites and teals."
+                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtqH51-Pzj17DBDZo9CXW6LhUakCr5Jn6aPG8BzdfNXkTeN4J2KS-XNmMxU1UeM0Ei3me3FKxnCcMCxj4oIfEMxrV4XdJ1La-oAmlLikljQ2n51PdUQtN4_nSfB7s0IPGigmmCYc9IKniuYydIo2oFYrwhDw9TKdmFXfbEXUf4MZcZCnvrrOw4uSslGi7NGzxuuQlWEnmgcqXkha6-WgZE4XPJINZTcUKm7QikFI2XRsLwxkEGiqE2CKKA5Tk_c_VGNA4zhOU6ra0" />
+                                        </div>
+                                        <span class="font-label-md text-on-surface">Robert Thompson</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="material-symbols-outlined text-primary text-[20px]">prescriptions</span>
+                                        <span class="text-body-sm">Prescription</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-body-sm text-on-surface-variant">Jan 22, 2024</td>
+                                <td class="px-6 py-4 text-body-sm">Dr. Michael Chen</td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="px-3 py-1 rounded-full bg-secondary-container/20 text-secondary text-[11px] font-bold uppercase tracking-tight">Finalized</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div
+                                        class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button class="p-2 hover:bg-primary/10 text-primary rounded-lg"
+                                            title="View PDF"><span
+                                                class="material-symbols-outlined">visibility</span></button>
+                                        <button class="p-2 hover:bg-primary/10 text-primary rounded-lg"
+                                            title="Download"><span
+                                                class="material-symbols-outlined">download</span></button>
+                                        <button class="p-2 hover:bg-primary/10 text-primary rounded-lg"
+                                            title="Audit Trail"><span
+                                                class="material-symbols-outlined">history</span></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Row 4 -->
+                            <tr class="hover:bg-surface-container-lowest transition-colors group cursor-pointer"
+                                onclick="updateSidebar('REC-88355', 'Sarah Jenkins (Personal)', 'Clinical Note', 'Staff Health Assessment', 'Jan 21, 2024', 'System Admin', 'Finalized')">
+                                <td class="px-6 py-4 text-label-md text-on-surface-variant">#REC-88355</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-surface-container overflow-hidden">
+                                            <img class="w-full h-full object-cover"
+                                                data-alt="A portrait of Dr. Sarah Jenkins, who is also a patient in this system for staff checkups. She is shown in professional clinical attire but without the white coat, looking relaxed. The setting is a brightly lit, high-end medical clinic office with sophisticated depth-of-field effects."
+                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCWKg-TsynneFxYKKu-Do2n_-PDdNCP2yuGYaD5iv1dUCTRXDJ-HPPkX6ju4cpiXl_8SQGklSBbKw-20HueCUeFzUYcErTctQPGvkwqWnDH8xF5zQ0VKjkZTE7t5fKWmgoyWukz637JkTyiXhxdPVZJicyU_crTfJqHuX9jc4gMtx2p_HqCJuE-5jOgw_6yyBSRaTeqVFVJn4To2AchHO4lydoqqrhKkpt6G2J3Z5Z9skNDt9d_qDMyHgEKEqY-In5Jmpw3GwTi_k" />
+                                        </div>
+                                        <span class="font-label-md text-on-surface">Sarah Jenkins</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="material-symbols-outlined text-outline text-[20px]">sticky_note_2</span>
+                                        <span class="text-body-sm">Clinical Note</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-body-sm text-on-surface-variant">Jan 21, 2024</td>
+                                <td class="px-6 py-4 text-body-sm">System Admin</td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="px-3 py-1 rounded-full bg-secondary-container/20 text-secondary text-[11px] font-bold uppercase tracking-tight">Finalized</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div
+                                        class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button class="p-2 hover:bg-primary/10 text-primary rounded-lg"
+                                            title="View PDF"><span
+                                                class="material-symbols-outlined">visibility</span></button>
+                                        <button class="p-2 hover:bg-primary/10 text-primary rounded-lg"
+                                            title="Download"><span
+                                                class="material-symbols-outlined">download</span></button>
+                                        <button class="p-2 hover:bg-primary/10 text-primary rounded-lg"
+                                            title="Audit Trail"><span
+                                                class="material-symbols-outlined">history</span></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination Footer -->
+                <div class="p-4 border-t border-outline-variant/10 flex items-center justify-between">
+                    <p class="text-body-sm text-on-surface-variant">Showing 1 to 4 of 12,410 records</p>
+                    <div class="flex gap-2">
+                        <button
+                            class="px-4 py-2 border border-outline-variant/30 rounded-lg text-body-sm hover:bg-surface-container">Previous</button>
+                        <button class="px-4 py-2 bg-primary text-on-primary rounded-lg text-body-sm">1</button>
+                        <button
+                            class="px-4 py-2 border border-outline-variant/30 rounded-lg text-body-sm hover:bg-surface-container">2</button>
+                        <button
+                            class="px-4 py-2 border border-outline-variant/30 rounded-lg text-body-sm hover:bg-surface-container">3</button>
+                        <button
+                            class="px-4 py-2 border border-outline-variant/30 rounded-lg text-body-sm hover:bg-surface-container">Next</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Quick View Sidebar -->
+            <div class="w-[380px] bg-surface rounded-[24px] clinical-shadow border border-outline-variant/20 flex flex-col p-6 overflow-y-auto"
+                id="quickViewSidebar">
+                <div class="flex items-center justify-between mb-8">
+                    <h3 class="font-headline-md text-headline-md text-on-surface">Quick View</h3>
+                    <button class="p-2 hover:bg-primary/5 text-on-surface-variant rounded-full"><span
+                            class="material-symbols-outlined">more_vert</span></button>
+                </div>
+                <!-- Preview State -->
+                <div id="sidebarContent">
+                    <div
+                        class="w-full aspect-[4/5] rounded-2xl bg-surface-container mb-6 flex flex-col items-center justify-center p-8 border-2 border-dashed border-primary/20 relative overflow-hidden group">
+                        <img class="absolute inset-0 w-full h-full object-cover opacity-50"
+                            data-alt="A detailed digital preview of a medical lab report on a tablet screen. The document shows various charts, blood levels, and physician signatures. The lighting is soft and professional, and the background is a clean white marble texture that fits the high-end clinical aesthetic of TeleMedHub."
+                            id="previewImage"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDl2M6kSdL4x9U0oPOrGSbjQET9FADKg-HaVObzQ2XuhLIOAQrRmpOaYQuFn4QcXL48fY1Lp9NbiaMkcX3UuF8Rqad-ljMugKJlivFnrGn6hRO9oQLvAx7WDr5iEnxbLk5cB0BmYgrtoQzdYagZumIrlLNThaBZAb2krhRURrpKYAAAdpTg7WfNOKniY5unBEL8Vrk0-fo9Ys0lMSsQVyyTQRDFj5U2QO1EtuznEgesUXyi7HiT8iBX4UCcHadRPKGwo0boxGvLTCg" />
+                        <div class="z-10 text-center">
+                            <span
+                                class="material-symbols-outlined text-display-lg text-primary/40 block mb-2">article</span>
+                            <p class="font-label-md text-on-surface-variant">Select a record for detailed preview</p>
+                        </div>
+                        <div
+                            class="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+                            <span class="material-symbols-outlined text-on-primary text-4xl">zoom_in</span>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <div>
+                            <p class="text-label-sm text-on-surface-variant uppercase tracking-widest">Metadata</p>
+                            <div class="mt-3 grid grid-cols-2 gap-4">
+                                <div class="bg-background p-3 rounded-xl">
+                                    <p class="text-[10px] text-on-surface-variant uppercase">Record ID</p>
+                                    <p class="text-body-sm font-bold" id="sb_id">#REC-88421</p>
+                                </div>
+                                <div class="bg-background p-3 rounded-xl">
+                                    <p class="text-[10px] text-on-surface-variant uppercase">Status</p>
+                                    <p class="text-body-sm font-bold text-secondary" id="sb_status">Finalized</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-label-sm text-on-surface-variant uppercase tracking-widest">Patient &amp;
+                                Provider</p>
+                            <div class="mt-3 space-y-3">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                        <span class="material-symbols-outlined">person</span></div>
+                                    <div>
+                                        <p class="text-body-sm font-bold" id="sb_patient">James Harrison</p>
+                                        <p class="text-[11px] text-on-surface-variant">DOB: 05/12/1954</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary">
+                                        <span class="material-symbols-outlined">medical_information</span></div>
+                                    <div>
+                                        <p class="text-body-sm font-bold" id="sb_doctor">Dr. Michael Chen</p>
+                                        <p class="text-[11px] text-on-surface-variant">Hematology Specialist</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-6 border-t border-outline-variant/10 grid grid-cols-2 gap-3">
+                            <button
+                                class="flex items-center justify-center gap-2 px-4 py-3 bg-primary text-on-primary rounded-xl font-label-md hover:opacity-90">
+                                <span class="material-symbols-outlined text-[18px]">share</span> Share
+                            </button>
+                            <button
+                                class="flex items-center justify-center gap-2 px-4 py-3 border-1.5 border-primary text-primary rounded-xl font-label-md hover:bg-primary/5">
+                                <span class="material-symbols-outlined text-[18px]">print</span> Print
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Micro-interaction Scripts -->
+    <script>
+        function updateSidebar(id, patient, type, detail, date, doctor, status) {
+            document.getElementById('sb_id').innerText = id;
+            document.getElementById('sb_patient').innerText = patient;
+            document.getElementById('sb_doctor').innerText = doctor;
+            document.getElementById('sb_status').innerText = status;
+
+            // Add a small animation effect
+            const sidebar = document.getElementById('quickViewSidebar');
+            sidebar.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                sidebar.style.transform = 'scale(1)';
+            }, 100);
+
+            // Update status color based on text
+            const statusEl = document.getElementById('sb_status');
+            if (status === 'Finalized') {
+                statusEl.className = 'text-body-sm font-bold text-secondary';
+            } else {
+                statusEl.className = 'text-body-sm font-bold text-outline';
+            }
+        }
+    </script>
+</body>
+
+</html>
