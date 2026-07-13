@@ -74,7 +74,7 @@ export function Button({
       {!isLoading && leftIcon && (
         <span className="material-symbols-outlined text-[1.25em]">{leftIcon}</span>
       )}
-      
+
       <span>{children}</span>
 
       {!isLoading && rightIcon && (
