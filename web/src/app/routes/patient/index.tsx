@@ -28,9 +28,9 @@ function PatientDashboard() {
   const patientBlood = profile?.blood_type ?? "A+";
   const patientCode = profile?.id ? `#TMH-${profile.id.slice(0, 4).toUpperCase()}` : "#TMH-MOCK";
 
-  // Filter scheduled or pending appointments
+  // Filter scheduled, pending, or confirmed appointments
   const activeAppointments = appointments?.filter(
-    (apt) => apt.status === "scheduled" || apt.status === "pending"
+    (apt) => apt.status === "scheduled" || apt.status === "pending" || apt.status === "confirmed"
   ) ?? [];
 
   // Sort by date ascending to get the next one

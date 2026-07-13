@@ -30,5 +30,12 @@ export function useUpdatePatientProfile() {
         message: "Profil rekam medis Anda berhasil disimpan.",
       });
     },
+    onError: (error: any) => {
+      addToast({
+        type: "error",
+        title: "Gagal Memperbarui Profil",
+        message: error instanceof Error ? error.message : "Terjadi kesalahan pada server.",
+      });
+    },
   });
 }
