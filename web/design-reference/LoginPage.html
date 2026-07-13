@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>TeleMedHub | Secure Enterprise Login</title>
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Icons -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#004f52",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#9ccaff",
+                        "secondary": "#006b5f",
+                        "tertiary-fixed": "#d0e4ff",
+                        "primary-fixed-dim": "#72d6db",
+                        "outline": "#6e797a",
+                        "outline-variant": "#bdc9c9",
+                        "on-secondary-fixed-variant": "#005048",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#4fdbc8",
+                        "primary-container": "#008286",
+                        "primary-fixed": "#8ff2f7",
+                        "surface-container-high": "#dee8ff",
+                        "on-tertiary-container": "#fdfcff",
+                        "surface-container-low": "#f0f3ff",
+                        "surface": "#f9f9ff",
+                        "surface-container": "#e7eeff",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#cfdaf2",
+                        "tertiary": "#005f9d",
+                        "on-primary-container": "#f3ffff",
+                        "primary": "#00676a",
+                        "on-tertiary-fixed": "#001d35",
+                        "inverse-primary": "#72d6db",
+                        "surface-container-highest": "#d8e3fb",
+                        "surface-bright": "#f9f9ff",
+                        "inverse-on-surface": "#ecf1ff",
+                        "on-secondary-container": "#006f64",
+                        "inverse-surface": "#263143",
+                        "secondary-fixed": "#71f8e4",
+                        "background": "#f9f9ff",
+                        "surface-variant": "#d8e3fb",
+                        "on-tertiary-fixed-variant": "#00497a",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#002021",
+                        "secondary-container": "#6df5e1",
+                        "tertiary-container": "#0079c4",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#111c2d",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed": "#00201c",
+                        "on-background": "#111c2d",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#00696d",
+                        "on-surface-variant": "#3d4949"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "gutter": "24px",
+                        "section-padding": "64px",
+                        "card-padding": "24px",
+                        "container-margin": "32px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Be Vietnam Pro"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"],
+                        "body-sm": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "headline-lg": ["Playfair Display"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "label-md": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .floating-shadow {
+            box-shadow: 0 4px 20px rgba(11, 138, 143, 0.08);
+        }
+
+        .hover-shadow:hover {
+            box-shadow: 0 8px 30px rgba(11, 138, 143, 0.12);
+        }
+
+        .clinical-gradient {
+            background: linear-gradient(135deg, rgba(249, 249, 255, 0.95) 0%, rgba(240, 249, 250, 0.95) 100%);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+    <!-- TopAppBar (Suppressed for focused login task per mandate) -->
+    <main class="min-h-screen flex flex-col md:flex-row relative">
+        <!-- Visual Column (Hidden on mobile) -->
+        <div
+            class="hidden md:flex md:w-1/2 lg:w-3/5 bg-surface-container overflow-hidden relative items-center justify-center">
+            <div class="absolute inset-0 z-0 opacity-80"
+                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD3pnn0VR_TDVjTR4ETh3W_VP41qmc-3SCeCU1fVBeofkNXPHTuzAs8Yl3q3NESUCAuUJopezJGJql6S32WHa3oqT7FQDLAft4JEDFfxxcm_gxzUSIIWqrUMsi51MD2_FfC6yPZCIYRd8cHcvbxo5I2Bei0Vta6WHJUQXVvNKXXY2z7cxrwTBcf56URSgJrtXn0lCoOPSGcCIRLRG3BV8d2D_zJlq-PNbLrtV_h4mlNkk3bI9H4hEg7XvpY22MEbG6F2xLvKlqocVU'); background-size: cover; background-position: center;">
+            </div>
+            <div class="absolute inset-0 bg-primary/10 mix-blend-multiply z-10"></div>
+            <div class="relative z-20 p-container-margin max-w-2xl text-center md:text-left">
+                <h1 class="font-display-lg text-display-lg text-on-primary-fixed mb-4">The Standard of Professional
+                    Telemedicine</h1>
+                <p class="font-body-lg text-body-lg text-on-primary-fixed-variant opacity-90 max-w-lg">
+                    TeleMedHub facilitates secure, efficient, and compassionate care through our integrated Clinical
+                    Command Center.
+                </p>
+                <div class="mt-base flex gap-gutter items-center">
+                    <div class="flex flex-col">
+                        <span class="font-label-md text-label-md text-primary font-bold">128-bit</span>
+                        <span class="font-label-sm text-label-sm text-on-surface-variant">Encryption</span>
+                    </div>
+                    <div class="w-px h-8 bg-outline-variant"></div>
+                    <div class="flex flex-col">
+                        <span class="font-label-md text-label-md text-primary font-bold">HIPAA</span>
+                        <span class="font-label-sm text-label-sm text-on-surface-variant">Compliant</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Login Column -->
+        <div
+            class="w-full md:w-1/2 lg:w-2/5 flex flex-col items-center justify-center p-container-margin bg-surface z-30">
+            <div class="w-full max-w-md">
+                <!-- Logo & Brand -->
+                <div class="text-center mb-section-padding">
+                    <div class="inline-flex items-center justify-center mb-4">
+                        <span class="material-symbols-outlined text-primary text-4xl mr-2"
+                            data-icon="medical_services">medical_services</span>
+                        <span class="font-display-lg text-headline-lg text-primary tracking-tight">TeleMedHub</span>
+                    </div>
+                    <p
+                        class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest font-semibold">
+                        Clinical Command Center</p>
+                </div>
+                <!-- Login Card -->
+                <div
+                    class="bg-surface-container-lowest p-card-padding rounded-[20px] floating-shadow border border-outline-variant/30">
+                    <form action="#" class="space-y-6">
+                        <div>
+                            <label class="block font-label-md text-label-md mb-2 text-on-surface-variant"
+                                for="professional-id">Professional ID / Email</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline"
+                                    data-icon="person">person</span>
+                                <input
+                                    class="w-full pl-12 pr-4 py-4 rounded-[16px] border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-200 bg-surface-bright text-on-surface placeholder:text-outline-variant"
+                                    id="professional-id" name="id" placeholder="e.g. dr.smith@telemedhub.com"
+                                    type="text" />
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-label-md text-label-md mb-2 text-on-surface-variant"
+                                for="password">Password</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline"
+                                    data-icon="lock">lock</span>
+                                <input
+                                    class="w-full pl-12 pr-4 py-4 rounded-[16px] border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-200 bg-surface-bright text-on-surface placeholder:text-outline-variant"
+                                    id="password" name="password" placeholder="••••••••••••" type="password" />
+                            </div>
+                            <div class="mt-2 text-right">
+                                <a class="font-label-sm text-label-sm text-primary hover:underline transition-all"
+                                    href="#">Forgot Password?</a>
+                            </div>
+                        </div>
+                        <!-- MFA Awareness -->
+                        <div class="p-3 rounded-lg bg-surface-container flex items-center gap-3">
+                            <span class="material-symbols-outlined text-secondary" data-icon="security">security</span>
+                            <p class="font-label-sm text-label-sm text-on-surface-variant">Multi-Factor Authentication
+                                will be requested upon identification.</p>
+                        </div>
+                        <button
+                            class="w-full py-4 rounded-[16px] bg-primary text-on-primary font-label-md text-label-md font-bold uppercase tracking-wider hover:bg-primary-container active:scale-95 transition-all duration-200 shadow-lg shadow-primary/20"
+                            type="submit">
+                            Secure Login
+                        </button>
+                    </form>
+                </div>
+                <!-- Secondary Actions -->
+                <div class="mt-gutter flex flex-col items-center gap-4">
+                    <div class="flex gap-gutter font-label-sm text-label-sm">
+                        <a class="text-on-surface-variant hover:text-primary flex items-center gap-1 transition-colors"
+                            href="#">
+                            <span class="material-symbols-outlined text-[18px]" data-icon="person_add">person_add</span>
+                            Request Access
+                        </a>
+                        <div class="w-px h-4 bg-outline-variant"></div>
+                        <a class="text-on-surface-variant hover:text-primary flex items-center gap-1 transition-colors"
+                            href="#">
+                            <span class="material-symbols-outlined text-[18px]" data-icon="analytics">analytics</span>
+                            System Status
+                        </a>
+                    </div>
+                    <!-- Compliance Badge -->
+                    <div
+                        class="mt-4 flex items-center gap-2 px-4 py-2 bg-secondary-container/20 border border-secondary/10 rounded-full">
+                        <span class="material-symbols-outlined text-secondary text-[16px]"
+                            data-icon="verified_user">verified_user</span>
+                        <span class="font-label-sm text-label-sm text-secondary uppercase font-bold">HIPAA Compliant
+                            &amp; AES-256 Encrypted</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Footer Integration -->
+    <footer
+        class="w-full py-base px-container-margin flex flex-col md:flex-row justify-between items-center border-t border-outline-variant dark:border-outline bg-surface-container-lowest dark:bg-inverse-surface">
+        <div class="flex flex-col md:flex-row items-center gap-gutter mb-4 md:mb-0">
+            <span class="font-headline-md text-headline-md text-primary">TeleMedHub</span>
+            <span class="font-body-sm text-body-sm text-on-surface-variant">© 2024 TeleMedHub. HIPAA Compliant &amp;
+                AES-256 Encrypted.</span>
+        </div>
+        <nav class="flex gap-gutter">
+            <a class="font-label-sm text-label-sm text-on-surface-variant dark:text-outline-variant hover:underline hover:text-primary dark:hover:text-primary-fixed transition-all duration-300"
+                href="#">Privacy Policy</a>
+            <a class="font-label-sm text-label-sm text-on-surface-variant dark:text-outline-variant hover:underline hover:text-primary dark:hover:text-primary-fixed transition-all duration-300"
+                href="#">Terms of Service</a>
+            <a class="font-label-sm text-label-sm text-on-surface-variant dark:text-outline-variant hover:underline hover:text-primary dark:hover:text-primary-fixed transition-all duration-300"
+                href="#">Security Architecture</a>
+        </nav>
+    </footer>
+    <!-- Interactive micro-effects -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    input.parentElement.querySelector('.material-symbols-outlined').style.color = '#00676a';
+                });
+                input.addEventListener('blur', () => {
+                    input.parentElement.querySelector('.material-symbols-outlined').style.color = '#6e797a';
+                });
+            });
+
+            // Smooth entrance animation
+            const card = document.querySelector('.floating-shadow');
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+</body>
+
+</html>
