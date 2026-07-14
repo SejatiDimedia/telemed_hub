@@ -273,6 +273,32 @@ func (r *PostgresRepository) List(ctx context.Context, patientID *uuid.UUID, sta
 		if err != nil {
 			return nil, 0, fmt.Errorf("failed to scan order: %w", err)
 		}
+
+		// Fetch items for this order
+		selectItemsQuery := `
+			SELECT id, order_id, medicine_id, quantity, unit_price, created_at, updated_at
+			FROM order_items
+			WHERE order_id = $1
+		`
+		itemRows, err := r.db.Query(ctx, selectItemsQuery, ord.ID)
+		if err != nil {
+			return nil, 0, fmt.Errorf("failed to fetch order items in list: %w", err)
+		}
+
+		for itemRows.Next() {
+			var item model.OrderItem
+			err = itemRows.Scan(
+				&item.ID, &item.OrderID, &item.MedicineID, &item.Quantity, &item.UnitPrice,
+				&item.CreatedAt, &item.UpdatedAt,
+			)
+			if err != nil {
+				itemRows.Close()
+				return nil, 0, fmt.Errorf("failed to scan order item in list: %w", err)
+			}
+			ord.Items = append(ord.Items, item)
+		}
+		itemRows.Close()
+
 		orders = append(orders, &ord)
 	}
 
