@@ -10,8 +10,9 @@ import { Button } from "../../../components/ui/Button";
 import { Badge } from "../../../components/ui/Badge";
 import { EmptyState } from "../../../components/shared/EmptyState";
 import { Dialog } from "../../../components/ui/Dialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useToastStore } from "../../../stores/toast-store";
 
 export const Route = createFileRoute("/patient/wallet")({
   component: PatientWalletPage,
@@ -29,7 +30,10 @@ type TopUpSchemaType = zod.infer<typeof topUpSchema>;
 function PatientWalletPage() {
   const queryClient = useQueryClient();
   const { data: wallet, isLoading: isWalletLoading } = useWallet();
-  const { data: transactions, isLoading: isTransactionsLoading } = useWalletTransactions();
+  const [txPage, setTxPage] = useState(1);
+  const { data: txResult, isLoading: isTransactionsLoading, isFetching: isTxFetching } = useWalletTransactions(txPage, 10);
+  const transactions = txResult?.data;
+  const txPagination = txResult?.pagination;
   const { data: profile } = usePatientProfile();
   const { mutateAsync: topUp, isPending: isTopUpPending } = useTopUpWallet();
 
@@ -48,10 +52,32 @@ function PatientWalletPage() {
     status: "success" | "failed" | null;
   } | null>(null);
 
+  const addToast = useToastStore((state) => state.addToast);
+
+  // Handle redirect from Midtrans after successful payment
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("payment") === "success") {
+      addToast({
+        type: "success",
+        title: "Pembayaran Berhasil!",
+        message: "Top-up saldo Anda sedang diproses. Saldo akan bertambah dalam beberapa detik.",
+      });
+      // Clean URL params
+      window.history.replaceState({}, "", window.location.pathname);
+      // Refresh wallet data after a short delay to allow webhook processing
+      const timer = setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: walletKeys.all });
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const {
     register,
     handleSubmit,
     setValue,
+    watch,
     reset,
     formState: { errors },
   } = useForm<TopUpSchemaType>({
@@ -139,15 +165,17 @@ function PatientWalletPage() {
   const getTransactionBadge = (type: string) => {
     switch (type) {
       case "top_up":
-        return <Badge variant="success">TOP UP</Badge>;
-      case "appointment_fee":
-        return <Badge variant="primary">CONSULTATION</Badge>;
+        return <Badge variant="success">Isi Saldo</Badge>;
+      case "consultation_payment":
+        return <Badge variant="primary">Bayar Konsultasi</Badge>;
       case "order_payment":
-        return <Badge variant="secondary">PHARMACY</Badge>;
+        return <Badge variant="secondary">Bayar Obat</Badge>;
       case "refund":
-        return <Badge variant="info">REFUND</Badge>;
+        return <Badge variant="info">Pengembalian Dana</Badge>;
       default:
-        return <Badge variant="neutral">{type.toUpperCase()}</Badge>;
+        // format unknown types nicely
+        const formatted = type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        return <Badge variant="neutral">{formatted}</Badge>;
     }
   };
 
@@ -245,8 +273,12 @@ function PatientWalletPage() {
                   </span>
                   <input
                     id="amount"
-                    type="number"
-                    {...register("amount", { valueAsNumber: true })}
+                    type="text"
+                    value={watch("amount") ? watch("amount").toLocaleString("id-ID") : ""}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, "");
+                      setValue("amount", val ? parseInt(val, 10) : 0, { shouldValidate: true });
+                    }}
                     className="w-full bg-surface-container-low border border-outline-variant/50 rounded-xl py-3 pl-12 pr-4 text-sm font-bold focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all"
                     placeholder="0"
                   />
@@ -317,20 +349,19 @@ function PatientWalletPage() {
                 <div className="h-10 bg-surface-container rounded"></div>
               </div>
             ) : transactions && transactions.length > 0 ? (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead className="bg-surface-container-low text-on-surface-variant text-label-sm uppercase tracking-wider select-none">
-                    <tr>
-                      <th className="px-6 py-4 font-bold">Waktu</th>
-                      <th className="px-6 py-4 font-bold">Tipe</th>
-                      <th className="px-6 py-4 font-bold">Nominal</th>
-                      <th className="px-6 py-4 font-bold">Saldo Akhir</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-outline-variant/10">
-                    {transactions
-                      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-                      .map((tx) => {
+              <>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left">
+                    <thead className="bg-surface-container-low text-on-surface-variant text-label-sm uppercase tracking-wider select-none">
+                      <tr>
+                        <th className="px-6 py-4 font-bold">Waktu</th>
+                        <th className="px-6 py-4 font-bold">Tipe</th>
+                        <th className="px-6 py-4 font-bold">Nominal</th>
+                        <th className="px-6 py-4 font-bold">Saldo Akhir</th>
+                      </tr>
+                    </thead>
+                    <tbody className={`divide-y divide-outline-variant/10 transition-opacity ${isTxFetching ? "opacity-50" : ""}`}>
+                      {transactions.map((tx) => {
                         const isCredit = tx.type === "top_up" || tx.type === "refund";
                         const amountStr = isCredit
                           ? `+${formatCurrency(tx.amount)}`
@@ -345,8 +376,7 @@ function PatientWalletPage() {
                               {getTransactionBadge(tx.type)}
                             </td>
                             <td
-                              className={`px-6 py-4 font-bold ${isCredit ? "text-green-600" : "text-on-surface"
-                                }`}
+                              className={`px-6 py-4 font-bold ${isCredit ? "text-green-600" : "text-on-surface"}`}
                             >
                               {amountStr}
                             </td>
@@ -356,9 +386,43 @@ function PatientWalletPage() {
                           </tr>
                         );
                       })}
-                  </tbody>
-                </table>
-              </div>
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Pagination Controls */}
+                {txPagination && txPagination.total_pages > 1 && (
+                  <div className="px-6 py-4 border-t border-outline-variant/20 flex items-center justify-between select-none">
+                    <p className="text-body-sm text-on-surface-variant">
+                      Menampilkan halaman <span className="font-bold text-on-surface">{txPagination.page}</span> dari{" "}
+                      <span className="font-bold text-on-surface">{txPagination.total_pages}</span>{" "}
+                      <span className="text-on-surface-variant/70">({txPagination.total_items} transaksi)</span>
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        leftIcon="chevron_left"
+                        onClick={() => setTxPage((p) => Math.max(1, p - 1))}
+                        disabled={txPage <= 1 || isTxFetching}
+                        className="rounded-lg px-3 py-1.5 text-xs"
+                      >
+                        Sebelumnya
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        rightIcon="chevron_right"
+                        onClick={() => setTxPage((p) => Math.min(txPagination.total_pages, p + 1))}
+                        disabled={txPage >= txPagination.total_pages || isTxFetching}
+                        className="rounded-lg px-3 py-1.5 text-xs"
+                      >
+                        Selanjutnya
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </>
             ) : (
               <EmptyState
                 icon="account_balance_wallet"

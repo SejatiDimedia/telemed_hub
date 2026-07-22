@@ -14,6 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
+	"github.com/timurdianradhasejati/telemed_hub/internal/config"
 	"github.com/timurdianradhasejati/telemed_hub/internal/wallet/repository"
 )
 
@@ -94,7 +95,9 @@ func TestWalletService_Operations(t *testing.T) {
 
 	ctx := context.Background()
 	repo := repository.NewPostgresRepository(db)
-	svc := NewWalletService(repo, db)
+	
+	cfg := &config.Config{}
+	svc := NewWalletService(repo, db, cfg)
 
 	userID, _ := seedPatientUser(t, ctx, db)
 
@@ -104,36 +107,34 @@ func TestWalletService_Operations(t *testing.T) {
 		assert.Equal(t, int64(0), bal)
 	})
 
-	t.Run("TopUp succeeds and records ledger entry", func(t *testing.T) {
+	t.Run("TopUp succeeds and returns Midtrans snap token", func(t *testing.T) {
 		key := "topup-key-1"
 		resp, err := svc.TopUp(ctx, userID, 100000.00, &key)
 		assert.NoError(t, err)
 		assert.NotNil(t, resp)
-		assert.Equal(t, 100000.00, resp.Amount)
-		assert.Equal(t, 100000.00, resp.BalanceAfter)
-		assert.Equal(t, "top_up", resp.Type)
+		assert.NotEmpty(t, resp.Token)
+		assert.NotEmpty(t, resp.RedirectURL)
 
 		// Second top up with same idempotency key returns cached response
 		respDuplicate, err := svc.TopUp(ctx, userID, 100000.00, &key)
 		assert.NoError(t, err)
-		assert.Equal(t, resp.ID, respDuplicate.ID)
-
-		// Check updated balance
-		bal, err := svc.GetBalance(ctx, userID)
-		assert.NoError(t, err)
-		assert.Equal(t, int64(100000), bal)
+		assert.Equal(t, resp.Token, respDuplicate.Token)
 	})
 
 	t.Run("TopUp exceeds max limit fails", func(t *testing.T) {
 		// Set env variable to trigger custom limit check
 		t.Setenv("WALLET_MAX_TOPUP_AMOUNT", "50000")
-		svcWithLimit := NewWalletService(repo, db)
+		svcWithLimit := NewWalletService(repo, db, cfg)
 
 		_, err := svcWithLimit.TopUp(ctx, userID, 60000.00, nil)
 		assert.ErrorIs(t, err, ErrMaxTopUpExceeded)
 	})
 
 	t.Run("Deduct succeeds and Refund restores balance", func(t *testing.T) {
+		// First topup the wallet properly using repository to bypass Midtrans flow for test
+		wallet, _ := repo.GetWalletByUserIDForUpdate(ctx, nil, userID)
+		repo.UpdateWalletBalance(ctx, nil, wallet.ID, 100000.00)
+
 		// Deduct 40000
 		err := svc.Deduct(ctx, userID, 40000, "Order 1 payment")
 		assert.NoError(t, err)

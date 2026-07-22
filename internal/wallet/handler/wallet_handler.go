@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
@@ -41,6 +42,9 @@ func NewWalletHandler(
 
 func (h *WalletHandler) Routes() chi.Router {
 	r := chi.NewRouter()
+
+	// Public route for Midtrans Webhook
+	r.Post("/webhook/midtrans", h.MidtransWebhook)
 
 	r.Group(func(r chi.Router) {
 		r.Use(middleware.AuthMiddleware(h.cfg, h.rdb))
@@ -136,6 +140,31 @@ func (h *WalletHandler) TopUp(w http.ResponseWriter, r *http.Request) {
 		Success: true,
 		Data:    resp,
 	})
+}
+
+func (h *WalletHandler) MidtransWebhook(w http.ResponseWriter, r *http.Request) {
+	var payload map[string]interface{}
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		h.logger.Error("failed to decode midtrans webhook payload", "error", err)
+		http.Error(w, "invalid payload", http.StatusBadRequest)
+		return
+	}
+
+	err := h.svc.ProcessMidtransWebhook(r.Context(), payload)
+	if err != nil {
+		h.logger.Error("failed to process midtrans webhook", "error", err)
+		// Midtrans expects 200 OK even if we fail to process, or 500 if we want them to retry
+		// We'll return 200 OK if it's an invalid signature to prevent retries of bad signatures,
+		// but return 500 for our internal database errors so they retry.
+		if strings.Contains(err.Error(), "invalid signature") || strings.Contains(err.Error(), "missing") || strings.Contains(err.Error(), "format") {
+			w.WriteHeader(http.StatusOK)
+		} else {
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 func (h *WalletHandler) ListTransactions(w http.ResponseWriter, r *http.Request) {

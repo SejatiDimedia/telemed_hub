@@ -10,13 +10,15 @@ import (
 )
 
 var (
-	ErrWalletNotFound = errors.New("wallet not found")
+	ErrWalletNotFound      = errors.New("wallet not found")
+	ErrTransactionNotFound = errors.New("transaction not found")
 )
 
 type WalletRepository interface {
 	GetOrCreateWallet(ctx context.Context, tx pgx.Tx, patientID uuid.UUID) (*model.Wallet, error)
 	GetWalletByUserID(ctx context.Context, tx pgx.Tx, userID uuid.UUID) (*model.Wallet, error)
 	GetWalletByUserIDForUpdate(ctx context.Context, tx pgx.Tx, userID uuid.UUID) (*model.Wallet, error)
+	GetWalletByIDForUpdate(ctx context.Context, tx pgx.Tx, walletID uuid.UUID) (*model.Wallet, error)
 	UpdateWalletBalance(ctx context.Context, tx pgx.Tx, walletID uuid.UUID, balance float64) error
 	CreateTransaction(ctx context.Context, tx pgx.Tx, txRecord *model.WalletTransaction) error
 	GetTransactionByIdempotencyKey(ctx context.Context, tx pgx.Tx, key string) (*model.WalletTransaction, error)

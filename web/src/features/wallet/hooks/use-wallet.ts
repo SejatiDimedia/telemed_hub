@@ -5,7 +5,7 @@ import { useToastStore } from "../../../stores/toast-store";
 export const walletKeys = {
   all: ["wallet"] as const,
   profile: () => [...walletKeys.all, "details"] as const,
-  transactions: () => [...walletKeys.all, "transactions"] as const,
+  transactions: (page: number) => [...walletKeys.all, "transactions", page] as const,
 };
 
 export function useWallet() {
@@ -16,11 +16,12 @@ export function useWallet() {
   });
 }
 
-export function useWalletTransactions() {
+export function useWalletTransactions(page = 1, pageSize = 10) {
   return useQuery({
-    queryKey: walletKeys.transactions(),
-    queryFn: walletApi.listTransactions,
+    queryKey: walletKeys.transactions(page),
+    queryFn: () => walletApi.listTransactions(page, pageSize),
     staleTime: 30 * 1000, // 30 seconds cache
+    placeholderData: (prev) => prev, // Keep previous data while loading next page
   });
 }
 
@@ -32,11 +33,13 @@ export function useTopUpWallet() {
     mutationFn: ({ amount, idempotencyKey }: { amount: number; idempotencyKey: string }) =>
       walletApi.topUp(amount, idempotencyKey),
     onSuccess: (data) => {
-      void queryClient.invalidateQueries({ queryKey: walletKeys.all });
+      window.location.href = data.redirect_url;
+    },
+    onError: () => {
       addToast({
-        type: "success",
-        title: "Top-up Berhasil",
-        message: `Saldo sebesar Rp ${data.amount.toLocaleString("id-ID")} telah ditambahkan ke dompet digital Anda.`,
+        type: "error",
+        title: "Top-up Gagal",
+        message: "Terjadi kesalahan saat memproses permintaan top-up. Silakan coba lagi.",
       });
     },
   });

@@ -23,7 +23,7 @@ func NewModule(
 	log *slog.Logger,
 ) *Module {
 	repo := repository.NewPostgresRepository(db)
-	svc := service.NewWalletService(repo, db)
+	svc := service.NewWalletService(repo, db, cfg)
 	h := handler.NewWalletHandler(svc, cfg, rdb, log)
 
 	return &Module{

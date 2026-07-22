@@ -14,3 +14,8 @@ export interface WalletTransaction {
 export interface TopUpRequest {
   amount: number;
 }
+
+export interface TopUpMidtransResponse {
+  token: string;
+  redirect_url: string;
+}

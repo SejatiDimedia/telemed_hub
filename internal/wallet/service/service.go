@@ -16,7 +16,8 @@ type WalletService interface {
 
 	// REST API operations for the wallet module
 	GetBalanceDetails(ctx context.Context, userID uuid.UUID) (*dto.WalletResponse, error)
-	TopUp(ctx context.Context, userID uuid.UUID, amount float64, idempotencyKey *string) (*dto.TransactionResponse, error)
+	TopUp(ctx context.Context, userID uuid.UUID, amount float64, idempotencyKey *string) (*dto.TopUpMidtransResponse, error)
+	ProcessMidtransWebhook(ctx context.Context, payload map[string]interface{}) error
 	ListTransactions(ctx context.Context, userID uuid.UUID, typeFilter *string, page, limit int) ([]*dto.TransactionResponse, int, error)
 	GetTransactionByIdempotencyKey(ctx context.Context, key string) (*dto.TransactionResponse, error)
 

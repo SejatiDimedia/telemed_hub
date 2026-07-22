@@ -18,7 +18,14 @@ type Config struct {
 	JWT                              JWTConfig
 	Server                           ServerConfig
 	LLM                              LLMConfig
+	Midtrans                         MidtransConfig
 	AppointmentCancelCutoffMinutes int
+}
+
+type MidtransConfig struct {
+	ServerKey   string
+	ClientKey   string
+	Environment string
 }
 
 type AppConfig struct {
@@ -124,6 +131,11 @@ func Load() (*Config, error) {
 	// LLM
 	cfg.LLM.APIKey = getEnvOrDefault("LLM_API_KEY", "")
 	cfg.LLM.APIURL = getEnvOrDefault("LLM_API_URL", "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent")
+
+	// Midtrans
+	cfg.Midtrans.ServerKey = getEnvOrDefault("MIDTRANS_SERVER_KEY", "")
+	cfg.Midtrans.ClientKey = getEnvOrDefault("MIDTRANS_CLIENT_KEY", "")
+	cfg.Midtrans.Environment = getEnvOrDefault("MIDTRANS_ENVIRONMENT", "sandbox")
 
 	return cfg, nil
 }

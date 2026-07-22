@@ -48,12 +48,17 @@ func (m *MockWalletService) GetBalanceDetails(ctx context.Context, userID uuid.U
 	return args.Get(0).(*dto.WalletResponse), args.Error(1)
 }
 
-func (m *MockWalletService) TopUp(ctx context.Context, userID uuid.UUID, amount float64, idempotencyKey *string) (*dto.TransactionResponse, error) {
+func (m *MockWalletService) TopUp(ctx context.Context, userID uuid.UUID, amount float64, idempotencyKey *string) (*dto.TopUpMidtransResponse, error) {
 	args := m.Called(ctx, userID, amount, idempotencyKey)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
-	return args.Get(0).(*dto.TransactionResponse), args.Error(1)
+	return args.Get(0).(*dto.TopUpMidtransResponse), args.Error(1)
+}
+
+func (m *MockWalletService) ProcessMidtransWebhook(ctx context.Context, payload map[string]interface{}) error {
+	args := m.Called(ctx, payload)
+	return args.Error(0)
 }
 
 func (m *MockWalletService) ListTransactions(ctx context.Context, userID uuid.UUID, typeFilter *string, page, limit int) ([]*dto.TransactionResponse, int, error) {
@@ -140,12 +145,9 @@ func TestWalletHandler_TopUp_Success(t *testing.T) {
 	userID := uuid.New()
 	reqBody := dto.TopUpRequest{Amount: 50000.0}
 
-	expectedResp := &dto.TransactionResponse{
-		ID:           uuid.New().String(),
-		Type:         "top_up",
-		Amount:       50000.0,
-		BalanceAfter: 200000.0,
-		CreatedAt:    "2026-07-07T00:00:00Z",
+	expectedResp := &dto.TopUpMidtransResponse{
+		Token:       "snap-token-123",
+		RedirectURL: "https://app.sandbox.midtrans.com/snap/v2/vtweb/snap-token-123",
 	}
 
 	mockSvc.On("TopUp", mock.Anything, userID, 50000.0, mock.Anything).Return(expectedResp, nil).Once()

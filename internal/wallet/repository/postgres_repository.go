@@ -132,6 +132,31 @@ func (r *PostgresRepository) GetWalletByUserIDForUpdate(ctx context.Context, tx 
 	return &w, nil
 }
 
+func (r *PostgresRepository) GetWalletByIDForUpdate(ctx context.Context, tx pgx.Tx, walletID uuid.UUID) (*model.Wallet, error) {
+	query := `
+		SELECT id, patient_id, balance, created_at, updated_at
+		FROM wallets
+		WHERE id = $1 AND deleted_at IS NULL
+		FOR UPDATE
+	`
+	var w model.Wallet
+	var err error
+	if tx != nil {
+		err = tx.QueryRow(ctx, query, walletID).Scan(&w.ID, &w.PatientID, &w.Balance, &w.CreatedAt, &w.UpdatedAt)
+	} else {
+		err = r.db.QueryRow(ctx, query, walletID).Scan(&w.ID, &w.PatientID, &w.Balance, &w.CreatedAt, &w.UpdatedAt)
+	}
+
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrWalletNotFound
+		}
+		return nil, fmt.Errorf("failed to fetch wallet for update: %w", err)
+	}
+
+	return &w, nil
+}
+
 func (r *PostgresRepository) UpdateWalletBalance(ctx context.Context, tx pgx.Tx, walletID uuid.UUID, balance float64) error {
 	now := time.Now().UTC()
 	query := `
