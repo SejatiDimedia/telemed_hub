@@ -35,10 +35,10 @@ func TestPostgresRepository_AvailabilityOperations(t *testing.T) {
 	require.NoError(t, err)
 
 	queryDoctor := `
-		INSERT INTO doctors (id, user_id, specialty, license_number, is_credential_verified, consultation_fee, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+		INSERT INTO doctors (id, user_id, is_credential_verified, consultation_fee, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6)`
 
-	_, err = db.Exec(ctx, queryDoctor, doctorID, userID, "general", "111.222", true, 100000, time.Now().UTC(), time.Now().UTC())
+	_, err = db.Exec(ctx, queryDoctor, doctorID, userID, true, 100000, time.Now().UTC(), time.Now().UTC())
 	require.NoError(t, err)
 
 	// 2. Create Availability Slot

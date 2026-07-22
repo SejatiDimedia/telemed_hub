@@ -1,14 +1,23 @@
 package dto
 
+// SpecialtyResponse defines the API response payload for a specialty.
+type SpecialtyResponse struct {
+	ID          string  `json:"id"`
+	Name        string  `json:"name"`
+	ImageIcon   string  `json:"image_icon"`
+	Description *string `json:"description,omitempty"`
+}
+
 // DoctorResponse defines the API response payload for doctor profiles.
 type DoctorResponse struct {
-	ID                   string  `json:"id"`
-	UserID               string  `json:"user_id"`
-	Email                string  `json:"email"`
-	FullName             string  `json:"full_name"`
-	PhoneNumber          *string `json:"phone_number,omitempty"`
-	Specialty            *string `json:"specialty"`
-	LicenseNumber        *string `json:"license_number,omitempty"`
+	ID                   string             `json:"id"`
+	UserID               string             `json:"user_id"`
+	Email                string             `json:"email"`
+	FullName             string             `json:"full_name"`
+	PhoneNumber          *string            `json:"phone_number,omitempty"`
+	SpecialtyID          *string            `json:"specialty_id"`
+	Specialty            *SpecialtyResponse `json:"specialty,omitempty"`
+	LicenseNumber        *string            `json:"license_number,omitempty"`
 	IsCredentialVerified bool    `json:"is_credential_verified"`
 	ConsultationFee      int64   `json:"consultation_fee"`
 }

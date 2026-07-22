@@ -24,14 +24,18 @@ func NewPostgresRepository(db *pgxpool.Pool) *PostgresRepository {
 
 func (r *PostgresRepository) GetByUserID(ctx context.Context, userID uuid.UUID) (*model.Doctor, error) {
 	query := `
-		SELECT d.id, d.user_id, u.email, u.full_name, u.phone_number, d.specialty, d.license_number, d.is_credential_verified, d.consultation_fee, d.created_at, d.updated_at, d.deleted_at
+		SELECT d.id, d.user_id, u.email, u.full_name, u.phone_number, d.specialty_id, s.id, s.name, s.image_icon, s.description, d.license_number, d.is_credential_verified, d.consultation_fee, d.created_at, d.updated_at, d.deleted_at
 		FROM doctors d
 		JOIN users u ON d.user_id = u.id
+		LEFT JOIN specialties s ON d.specialty_id = s.id
 		WHERE d.user_id = $1 AND d.deleted_at IS NULL AND u.deleted_at IS NULL`
 
 	var d model.Doctor
+	var sID *uuid.UUID
+	var sName, sIcon, sDesc *string
+
 	err := r.db.QueryRow(ctx, query, userID).Scan(
-		&d.ID, &d.UserID, &d.Email, &d.FullName, &d.PhoneNumber, &d.Specialty, &d.LicenseNumber, &d.IsCredentialVerified, &d.ConsultationFee, &d.CreatedAt, &d.UpdatedAt, &d.DeletedAt,
+		&d.ID, &d.UserID, &d.Email, &d.FullName, &d.PhoneNumber, &d.SpecialtyID, &sID, &sName, &sIcon, &sDesc, &d.LicenseNumber, &d.IsCredentialVerified, &d.ConsultationFee, &d.CreatedAt, &d.UpdatedAt, &d.DeletedAt,
 	)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -40,25 +44,47 @@ func (r *PostgresRepository) GetByUserID(ctx context.Context, userID uuid.UUID) 
 		return nil, fmt.Errorf("failed to fetch doctor by user ID: %w", err)
 	}
 
+	if sID != nil {
+		d.Specialty = &model.Specialty{
+			ID:          *sID,
+			Name:        *sName,
+			ImageIcon:   *sIcon,
+			Description: sDesc,
+		}
+	}
+
 	return &d, nil
 }
 
 func (r *PostgresRepository) GetByID(ctx context.Context, id uuid.UUID) (*model.Doctor, error) {
 	query := `
-		SELECT d.id, d.user_id, u.email, u.full_name, u.phone_number, d.specialty, d.license_number, d.is_credential_verified, d.consultation_fee, d.created_at, d.updated_at, d.deleted_at
+		SELECT d.id, d.user_id, u.email, u.full_name, u.phone_number, d.specialty_id, s.id, s.name, s.image_icon, s.description, d.license_number, d.is_credential_verified, d.consultation_fee, d.created_at, d.updated_at, d.deleted_at
 		FROM doctors d
 		JOIN users u ON d.user_id = u.id
+		LEFT JOIN specialties s ON d.specialty_id = s.id
 		WHERE d.id = $1 AND d.deleted_at IS NULL AND u.deleted_at IS NULL`
 
 	var d model.Doctor
+	var sID *uuid.UUID
+	var sName, sIcon, sDesc *string
+
 	err := r.db.QueryRow(ctx, query, id).Scan(
-		&d.ID, &d.UserID, &d.Email, &d.FullName, &d.PhoneNumber, &d.Specialty, &d.LicenseNumber, &d.IsCredentialVerified, &d.ConsultationFee, &d.CreatedAt, &d.UpdatedAt, &d.DeletedAt,
+		&d.ID, &d.UserID, &d.Email, &d.FullName, &d.PhoneNumber, &d.SpecialtyID, &sID, &sName, &sIcon, &sDesc, &d.LicenseNumber, &d.IsCredentialVerified, &d.ConsultationFee, &d.CreatedAt, &d.UpdatedAt, &d.DeletedAt,
 	)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrDoctorNotFound
 		}
 		return nil, fmt.Errorf("failed to fetch doctor by ID: %w", err)
+	}
+
+	if sID != nil {
+		d.Specialty = &model.Specialty{
+			ID:          *sID,
+			Name:        *sName,
+			ImageIcon:   *sIcon,
+			Description: sDesc,
+		}
 	}
 
 	return &d, nil
@@ -92,10 +118,10 @@ func (r *PostgresRepository) Update(ctx context.Context, d *model.Doctor) error 
 	// 2. Update doctor specific fields
 	queryDoctor := `
 		UPDATE doctors
-		SET specialty = $1, license_number = $2, consultation_fee = $3, updated_at = $4
+		SET specialty_id = $1, license_number = $2, consultation_fee = $3, updated_at = $4
 		WHERE id = $5 AND deleted_at IS NULL`
 
-	res, err = tx.Exec(ctx, queryDoctor, d.Specialty, d.LicenseNumber, d.ConsultationFee, now, d.ID)
+	res, err = tx.Exec(ctx, queryDoctor, d.SpecialtyID, d.LicenseNumber, d.ConsultationFee, now, d.ID)
 	if err != nil {
 		return fmt.Errorf("failed to update doctor fields: %w", err)
 	}
@@ -148,7 +174,7 @@ func (r *PostgresRepository) List(ctx context.Context, specialty *string, onlyVe
 	argCount := 1
 
 	if specialty != nil && *specialty != "" {
-		whereClauses = append(whereClauses, fmt.Sprintf("d.specialty ILIKE $%d", argCount))
+		whereClauses = append(whereClauses, fmt.Sprintf("s.name ILIKE $%d OR CAST(d.specialty_id AS VARCHAR) = $%d", argCount, argCount))
 		args = append(args, "%"+*specialty+"%")
 		argCount++
 	}
@@ -167,6 +193,7 @@ func (r *PostgresRepository) List(ctx context.Context, specialty *string, onlyVe
 		SELECT COUNT(d.id)
 		FROM doctors d
 		JOIN users u ON d.user_id = u.id
+		LEFT JOIN specialties s ON d.specialty_id = s.id
 		%s`, whereSQL)
 
 	var totalItems int
@@ -177,9 +204,10 @@ func (r *PostgresRepository) List(ctx context.Context, specialty *string, onlyVe
 
 	// 2. Fetch records
 	selectQuery := fmt.Sprintf(`
-		SELECT d.id, d.user_id, u.email, u.full_name, u.phone_number, d.specialty, d.license_number, d.is_credential_verified, d.consultation_fee, d.created_at, d.updated_at, d.deleted_at
+		SELECT d.id, d.user_id, u.email, u.full_name, u.phone_number, d.specialty_id, s.id, s.name, s.image_icon, s.description, d.license_number, d.is_credential_verified, d.consultation_fee, d.created_at, d.updated_at, d.deleted_at
 		FROM doctors d
 		JOIN users u ON d.user_id = u.id
+		LEFT JOIN specialties s ON d.specialty_id = s.id
 		%s
 		ORDER BY d.%s %s
 		LIMIT $%d OFFSET $%d`, whereSQL, sortBy, order, argCount, argCount+1)
@@ -195,11 +223,21 @@ func (r *PostgresRepository) List(ctx context.Context, specialty *string, onlyVe
 	doctors := []*model.Doctor{}
 	for rows.Next() {
 		var d model.Doctor
+		var sID *uuid.UUID
+		var sName, sIcon, sDesc *string
 		err = rows.Scan(
-			&d.ID, &d.UserID, &d.Email, &d.FullName, &d.PhoneNumber, &d.Specialty, &d.LicenseNumber, &d.IsCredentialVerified, &d.ConsultationFee, &d.CreatedAt, &d.UpdatedAt, &d.DeletedAt,
+			&d.ID, &d.UserID, &d.Email, &d.FullName, &d.PhoneNumber, &d.SpecialtyID, &sID, &sName, &sIcon, &sDesc, &d.LicenseNumber, &d.IsCredentialVerified, &d.ConsultationFee, &d.CreatedAt, &d.UpdatedAt, &d.DeletedAt,
 		)
 		if err != nil {
 			return nil, 0, fmt.Errorf("failed to scan doctor row: %w", err)
+		}
+		if sID != nil {
+			d.Specialty = &model.Specialty{
+				ID:          *sID,
+				Name:        *sName,
+				ImageIcon:   *sIcon,
+				Description: sDesc,
+			}
 		}
 		doctors = append(doctors, &d)
 	}

@@ -13,7 +13,7 @@ function AITriageIndex() {
   const { data: sessionsResponse, isLoading } = useAISessions();
   const createSession = useCreateAISession();
   const navigate = useNavigate();
-  const addToast = useToastStore((state) => state.addToast);
+  const addToast = useToastStore((state: any) => state.addToast);
 
   // apiClient unwraps the { data: ... } envelope, so sessionsResponse is already the array
   const sessions = Array.isArray(sessionsResponse) ? sessionsResponse : [];
@@ -26,7 +26,7 @@ function AITriageIndex() {
     }
     
     createSession.mutate(undefined, {
-      onSuccess: (res) => {
+      onSuccess: (res: any) => {
         navigate({ to: `/patient/ai-triage/${res.id}` });
       },
       onError: (error: any) => {

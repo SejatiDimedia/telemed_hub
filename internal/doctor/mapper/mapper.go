@@ -13,13 +13,31 @@ func ToResponse(doctor *model.Doctor) *dto.DoctorResponse {
 		return nil
 	}
 
+	var specialtyResp *dto.SpecialtyResponse
+	var specialtyIDStr *string
+
+	if doctor.SpecialtyID != nil {
+		idStr := doctor.SpecialtyID.String()
+		specialtyIDStr = &idStr
+	}
+
+	if doctor.Specialty != nil {
+		specialtyResp = &dto.SpecialtyResponse{
+			ID:          doctor.Specialty.ID.String(),
+			Name:        doctor.Specialty.Name,
+			ImageIcon:   doctor.Specialty.ImageIcon,
+			Description: doctor.Specialty.Description,
+		}
+	}
+
 	return &dto.DoctorResponse{
 		ID:                   doctor.ID.String(),
 		UserID:               doctor.UserID.String(),
 		Email:                doctor.Email,
 		FullName:             doctor.FullName,
 		PhoneNumber:          doctor.PhoneNumber,
-		Specialty:            doctor.Specialty,
+		SpecialtyID:          specialtyIDStr,
+		Specialty:            specialtyResp,
 		LicenseNumber:        doctor.LicenseNumber,
 		IsCredentialVerified: doctor.IsCredentialVerified,
 		ConsultationFee:      doctor.ConsultationFee,

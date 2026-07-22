@@ -57,13 +57,14 @@ func TestDoctorService_Caching(t *testing.T) {
 	phone := "+62811223344"
 	specialty := "Cardiology"
 	license := "123.456"
+	specID := uuid.MustParse("f47ac10b-58cc-4372-a567-0e02b2c3d479")
 
 	docModel := &model.Doctor{
 		ID:                   docID,
 		UserID:               doctorUserID,
 		FullName:             "Dr. Cache-Aside",
 		PhoneNumber:          &phone,
-		Specialty:            &specialty,
+		SpecialtyID:          &specID,
 		LicenseNumber:        &license,
 		IsCredentialVerified: true,
 		ConsultationFee:      150000,
@@ -92,7 +93,7 @@ func TestDoctorService_Caching(t *testing.T) {
 		mockRepo.On("GetByUserID", mock.Anything, doctorUserID).Return(docModel, nil).Once()
 		mockRepo.On("Update", mock.Anything, mock.Anything).Return(nil).Once()
 		updateReq := dto.UpdateDoctorRequest{
-			Specialty:       specialty,
+			SpecialtyID:     "f47ac10b-58cc-4372-a567-0e02b2c3d479",
 			LicenseNumber:   license,
 			ConsultationFee: 150000,
 			PhoneNumber:     phone,

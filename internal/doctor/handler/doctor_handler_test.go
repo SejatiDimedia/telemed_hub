@@ -107,15 +107,15 @@ func TestDoctorHandler_GetByID(t *testing.T) {
 	doctorID := uuid.New()
 	phone := "+6281122334455"
 	license := "123.456"
-	specialty := "cardiology"
 
+	specialtyID := "f47ac10b-58cc-4372-a567-0e02b2c3d479"
 	fullProfile := &dto.DoctorResponse{
 		ID:                   doctorID.String(),
 		UserID:               userID.String(),
 		Email:                "amir@doctor.com",
 		FullName:             "Dr. Amir",
 		PhoneNumber:          &phone,
-		Specialty:            &specialty,
+		SpecialtyID:          &specialtyID,
 		LicenseNumber:        &license,
 		IsCredentialVerified: true,
 		ConsultationFee:      150000,

@@ -95,13 +95,18 @@ func TestPostgresRepository_DoctorOperations(t *testing.T) {
 	_, err = db.Exec(ctx, queryUser, d2UserID, "budi@test.com", "hash", "Dr. Budi", true, "active", time.Now().UTC(), time.Now().UTC())
 	require.NoError(t, err)
 
-	queryDoctor := `
-		INSERT INTO doctors (id, user_id, specialty, license_number, is_credential_verified, consultation_fee, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
-
-	_, err = db.Exec(ctx, queryDoctor, d1DoctorID, d1UserID, "cardiology", "123.456", false, 150000, time.Now().UTC(), time.Now().UTC())
+	specID := uuid.New()
+	querySpecialty := `INSERT INTO specialties (id, name, image_icon) VALUES ($1, $2, $3)`
+	_, err = db.Exec(ctx, querySpecialty, specID, "Cardiology", "icon.png")
 	require.NoError(t, err)
-	_, err = db.Exec(ctx, queryDoctor, d2DoctorID, d2UserID, "pediatrics", "987.654", true, 200000, time.Now().UTC(), time.Now().UTC())
+
+	queryDoctor := `
+		INSERT INTO doctors (id, user_id, specialty_id, is_credential_verified, consultation_fee, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)`
+
+	_, err = db.Exec(ctx, queryDoctor, d1DoctorID, d1UserID, specID, false, 150000, time.Now().UTC(), time.Now().UTC())
+	require.NoError(t, err)
+	_, err = db.Exec(ctx, queryDoctor, d2DoctorID, d2UserID, nil, true, 200000, time.Now().UTC(), time.Now().UTC())
 	require.NoError(t, err)
 
 	// 2. Fetch by User ID
@@ -140,8 +145,8 @@ func TestPostgresRepository_DoctorOperations(t *testing.T) {
 	assert.Equal(t, "Dr. Budi", docs[0].FullName) // Fee 200000 > 180000 (sorted descending)
 
 	// Scenario B: Filter specialty
-	spec := "cardiology"
-	docsSpec, totalSpec, err := repo.List(ctx, &spec, false, "created_at", "desc", 0, 10)
+	specStr := "cardiology"
+	docsSpec, totalSpec, err := repo.List(ctx, &specStr, false, "created_at", "desc", 0, 10)
 	require.NoError(t, err)
 	assert.Equal(t, 1, totalSpec)
 	assert.Equal(t, "Dr. Amir", docsSpec[0].FullName)

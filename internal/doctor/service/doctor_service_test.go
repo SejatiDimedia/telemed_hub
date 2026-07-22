@@ -101,8 +101,8 @@ func TestDoctorService_GetProfileByUserID(t *testing.T) {
 
 	userID := uuid.New()
 	dID := uuid.New()
-	specialty := "cardiology"
 	license := "123.456"
+	specID := uuid.MustParse("f47ac10b-58cc-4372-a567-0e02b2c3d479")
 	phone := "+6281122334455"
 
 	doctor := &model.Doctor{
@@ -111,7 +111,7 @@ func TestDoctorService_GetProfileByUserID(t *testing.T) {
 		Email:                "amir@doctor.com",
 		FullName:             "Dr. Amir",
 		PhoneNumber:          &phone,
-		Specialty:            &specialty,
+		SpecialtyID:          &specID,
 		LicenseNumber:        &license,
 		IsCredentialVerified: true,
 		ConsultationFee:      150000,
@@ -123,7 +123,7 @@ func TestDoctorService_GetProfileByUserID(t *testing.T) {
 		resp, err := svc.GetProfileByUserID(context.Background(), userID)
 		require.NoError(t, err)
 		assert.Equal(t, dID.String(), resp.ID)
-		assert.Equal(t, "cardiology", *resp.Specialty)
+		assert.Equal(t, specID.String(), *resp.SpecialtyID)
 		assert.True(t, resp.IsCredentialVerified)
 		mockRepo.AssertExpectations(t)
 	})
@@ -146,7 +146,7 @@ func TestDoctorService_UpdateProfile(t *testing.T) {
 
 	t.Run("Success Update", func(t *testing.T) {
 		req := dto.UpdateDoctorRequest{
-			Specialty:       "pediatrics",
+			SpecialtyID:     "f47ac10b-58cc-4372-a567-0e02b2c3d479",
 			LicenseNumber:   "987.654",
 			ConsultationFee: 200000,
 			PhoneNumber:     "+6281122334455",
@@ -157,7 +157,7 @@ func TestDoctorService_UpdateProfile(t *testing.T) {
 
 		resp, err := svc.UpdateProfile(context.Background(), userID, req)
 		require.NoError(t, err)
-		assert.Equal(t, "pediatrics", *resp.Specialty)
+		assert.Equal(t, "f47ac10b-58cc-4372-a567-0e02b2c3d479", *resp.SpecialtyID)
 		assert.Equal(t, "987.654", *resp.LicenseNumber)
 		assert.Equal(t, int64(200000), resp.ConsultationFee)
 		mockRepo.AssertExpectations(t)
@@ -165,7 +165,7 @@ func TestDoctorService_UpdateProfile(t *testing.T) {
 
 	t.Run("Validation error", func(t *testing.T) {
 		req := dto.UpdateDoctorRequest{
-			Specialty:       "",
+			SpecialtyID:     "",
 			LicenseNumber:   "",
 			ConsultationFee: -100,
 			PhoneNumber:     "invalid-phone",

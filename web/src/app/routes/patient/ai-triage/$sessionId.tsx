@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { useState, useRef, useEffect } from 'react';
 import type { AISuggestion } from '@/features/ai-assistant/types';
-import { Alert } from '@/components/ui/Alert';
 
 export const Route = createFileRoute('/patient/ai-triage/$sessionId')({
   component: AISessionChat,
@@ -151,7 +150,7 @@ function AISessionChat() {
               <Input
                 placeholder="Deskripsikan gejala Anda (minimal 5 karakter)..."
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e: any) => setInput(e.target.value)}
                 disabled={sendMessage.isPending}
                 className="w-full bg-surface-container-lowest border-outline-variant focus:border-primary focus:ring-primary shadow-sm rounded-xl py-3 px-4"
                 autoComplete="off"

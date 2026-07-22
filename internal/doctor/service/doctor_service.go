@@ -58,11 +58,20 @@ func (s *DoctorServiceImpl) UpdateProfile(ctx context.Context, userID uuid.UUID,
 		return nil, err
 	}
 
-	specialty := strings.TrimSpace(req.Specialty)
+	specialtyIDStr := strings.TrimSpace(req.SpecialtyID)
+	var specIDPtr *uuid.UUID
+	if specialtyIDStr != "" {
+		parsedID, err := uuid.Parse(specialtyIDStr)
+		if err != nil {
+			return nil, fmt.Errorf("invalid specialty_id format: %w", err)
+		}
+		specIDPtr = &parsedID
+	}
+
 	license := strings.TrimSpace(req.LicenseNumber)
 	phone := strings.TrimSpace(req.PhoneNumber)
 
-	doctor.Specialty = &specialty
+	doctor.SpecialtyID = specIDPtr
 	doctor.LicenseNumber = &license
 	doctor.ConsultationFee = req.ConsultationFee
 	doctor.PhoneNumber = &phone

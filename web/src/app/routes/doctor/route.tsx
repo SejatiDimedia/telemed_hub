@@ -27,7 +27,7 @@ function DoctorLayout() {
   const { data: profile } = useDoctorProfileMe();
 
   const displayName = profile?.full_name ?? user?.email.split("@")[0] ?? "Doctor";
-  const specialty = profile?.specialty ?? "Medical Specialist";
+  const specialty = profile?.specialty?.name ?? "Medical Specialist";
 
   return (
     <div className="bg-background text-on-background font-body min-h-screen">

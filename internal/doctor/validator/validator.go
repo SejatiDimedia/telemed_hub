@@ -81,9 +81,9 @@ func ValidateUpdateDoctor(req dto.UpdateDoctorRequest) error {
 	}
 
 	// Specialty validation
-	req.Specialty = strings.TrimSpace(req.Specialty)
-	if req.Specialty == "" {
-		errs = append(errs, ValidationError{Field: "specialty", Issue: "must not be empty"})
+	req.SpecialtyID = strings.TrimSpace(req.SpecialtyID)
+	if req.SpecialtyID == "" {
+		errs = append(errs, ValidationError{Field: "specialty_id", Issue: "must not be empty"})
 	}
 
 	// License Number validation

@@ -12,5 +12,5 @@ CREATE TABLE IF NOT EXISTS stock_mutations (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX idx_stock_mutations_medicine_id ON stock_mutations(medicine_id);
-CREATE INDEX idx_stock_mutations_created_at ON stock_mutations(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_stock_mutations_medicine_id ON stock_mutations(medicine_id);
+CREATE INDEX IF NOT EXISTS idx_stock_mutations_created_at ON stock_mutations(created_at DESC);

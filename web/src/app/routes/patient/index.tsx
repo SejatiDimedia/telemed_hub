@@ -44,7 +44,7 @@ function PatientDashboard() {
     : null;
 
   const nextDoctorName = nextDoctor?.full_name ?? "Medical Specialist";
-  const nextDoctorSpecialty = nextDoctor?.specialty ?? "Consultant Physician";
+  const nextDoctorSpecialty = nextDoctor?.specialty?.name ?? "Consultant Physician";
 
   const formatAppointmentDate = (dateStr: string) => {
     try {

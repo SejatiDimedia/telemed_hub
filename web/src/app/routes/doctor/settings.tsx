@@ -16,7 +16,7 @@ const doctorSettingsSchema = zod.object({
   phone_number: zod.string()
     .min(1, "Nomor telepon wajib diisi")
     .regex(/^\+?[1-9]\d{1,14}$/, "Format nomor telepon tidak valid (E.164, misal: +6281234567890)"),
-  specialty: zod.string().min(1, "Spesialisasi wajib diisi"),
+  specialty_id: zod.string().min(1, "Spesialisasi wajib diisi"),
   license_number: zod.string().min(1, "Nomor izin praktek wajib diisi"),
   consultation_fee: zod.number()
     .min(1, "Tarif konsultasi harus lebih dari 0"),
@@ -38,7 +38,7 @@ function DoctorSettingsPage() {
     resolver: zodResolver(doctorSettingsSchema),
     defaultValues: {
       phone_number: "",
-      specialty: "",
+      specialty_id: "",
       license_number: "",
       consultation_fee: 0,
     },
@@ -48,7 +48,7 @@ function DoctorSettingsPage() {
   useEffect(() => {
     if (profile) {
       setValue("phone_number", profile.phone_number ?? "");
-      setValue("specialty", profile.specialty ?? "");
+      setValue("specialty_id", profile.specialty_id ?? "");
       setValue("license_number", profile.license_number ?? "");
       setValue("consultation_fee", profile.consultation_fee ?? 0);
     }
@@ -166,15 +166,21 @@ function DoctorSettingsPage() {
               <label htmlFor="settings_specialty" className="block text-xs font-bold text-on-surface-variant mb-1 select-none">
                 Spesialisasi Medis
               </label>
-              <input
+              <select
                 id="settings_specialty"
-                type="text"
-                placeholder="misal: Cardiologist"
-                {...register("specialty")}
+                {...register("specialty_id")}
                 className="w-full bg-white border border-outline-variant/50 rounded-lg py-2.5 px-3 text-sm outline-none focus:ring-1 focus:ring-primary transition-all"
-              />
-              {errors.specialty && (
-                <p className="text-xs text-error font-semibold mt-1">{errors.specialty.message}</p>
+              >
+                <option value="">Pilih Spesialisasi</option>
+                {/* Fallback hardcoded for now, waiting for backend GET /specialties */}
+                <option value="f47ac10b-58cc-4372-a567-0e02b2c3d479">Cardiology</option>
+                <option value="f47ac10b-58cc-4372-a567-0e02b2c3d480">Neurology</option>
+                <option value="f47ac10b-58cc-4372-a567-0e02b2c3d481">Pediatrics</option>
+                <option value="f47ac10b-58cc-4372-a567-0e02b2c3d482">General Practitioner</option>
+                <option value="f47ac10b-58cc-4372-a567-0e02b2c3d483">Dermatology</option>
+              </select>
+              {errors.specialty_id && (
+                <p className="text-xs text-error font-semibold mt-1">{errors.specialty_id.message}</p>
               )}
             </div>
             <div>

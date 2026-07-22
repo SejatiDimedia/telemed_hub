@@ -13,7 +13,8 @@ type Doctor struct {
 	Email                string     `json:"email"`
 	FullName             string     `json:"full_name"`
 	PhoneNumber          *string    `json:"phone_number"`
-	Specialty            *string    `json:"specialty"`
+	SpecialtyID          *uuid.UUID `json:"specialty_id"`
+	Specialty            *Specialty `json:"specialty,omitempty"`
 	LicenseNumber        *string    `json:"license_number"`
 	IsCredentialVerified bool       `json:"is_credential_verified"`
 	ConsultationFee      int64      `json:"consultation_fee"`

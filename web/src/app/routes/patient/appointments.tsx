@@ -135,7 +135,7 @@ function PatientAppointmentsPage() {
     return doctors.filter(
       (doc) =>
         doc.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (doc.specialty && doc.specialty.toLowerCase().includes(searchQuery.toLowerCase()))
+        (doc.specialty && doc.specialty.name.toLowerCase().includes(searchQuery.toLowerCase()))
     );
   }, [doctors, searchQuery]);
 
@@ -243,7 +243,7 @@ function PatientAppointmentsPage() {
 
   const getDoctorSpecialtyForAppointment = (docId: string) => {
     const doc = doctors?.find((d) => d.id === docId);
-    return doc?.specialty ?? "Consultant";
+    return doc?.specialty?.name ?? "Consultant";
   };
 
   const getAppointmentStatusBadge = (status: string) => {
@@ -354,7 +354,7 @@ function PatientAppointmentsPage() {
                               )}
                             </div>
                             <p className="text-sm text-on-surface-variant/80 font-semibold mt-1">
-                              {doc.specialty ?? "Dokter Umum"}
+                              {doc.specialty?.name ?? "Dokter Umum"}
                             </p>
                             <p className="text-xs text-primary font-bold mt-2">
                               Tarif: {formatCurrency(Number(doc.consultation_fee))}
@@ -579,7 +579,7 @@ function PatientAppointmentsPage() {
             <Avatar name={activeDoctor?.full_name ?? ""} size="md" />
             <div className="flex-1 min-w-0">
               <h5 className="font-bold text-on-surface text-sm truncate">{activeDoctor?.full_name}</h5>
-              <p className="text-xs text-on-surface-variant mt-0.5">{activeDoctor?.specialty}</p>
+              <p className="text-xs text-on-surface-variant mt-0.5">{activeDoctor?.specialty?.name}</p>
               <div className="mt-3 flex flex-col sm:flex-row sm:items-center gap-3 text-xs font-semibold text-on-surface-variant/80">
                 <div className="flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-primary text-[18px]">calendar_today</span>

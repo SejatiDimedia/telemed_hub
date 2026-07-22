@@ -96,8 +96,8 @@ func seedTreatmentEntities(t *testing.T, ctx context.Context, db *pgxpool.Pool) 
 	_, err = db.Exec(ctx, `INSERT INTO patients (id, user_id) VALUES ($1,$2)`, patientID, patientUserID)
 	require.NoError(t, err)
 
-	_, err = db.Exec(ctx, `INSERT INTO doctors (id, user_id, specialty, consultation_fee, is_credential_verified) VALUES ($1,$2,$3,$4,$5)`,
-		doctorID, doctorUserID, "General Practice", 50000, true)
+	_, err = db.Exec(ctx, `INSERT INTO doctors (id, user_id, consultation_fee, is_credential_verified) VALUES ($1,$2,$3,$4)`,
+		doctorID, doctorUserID, 150000, true)
 	require.NoError(t, err)
 
 	startTime := time.Now().Add(1 * time.Hour).UTC()

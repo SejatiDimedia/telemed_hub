@@ -111,8 +111,8 @@ func TestPostgresRepository_ConcurrencyBooking(t *testing.T) {
 	require.NoError(t, err)
 
 	// Seed Doctor Profile
-	_, err = db.Exec(ctx, `INSERT INTO doctors (id, user_id, specialty, consultation_fee, is_credential_verified) VALUES ($1, $2, $3, $4, $5)`,
-		doctorID, doctorUserID, "General Practitioner", 100000, true)
+	_, err = db.Exec(ctx, `INSERT INTO doctors (id, user_id, consultation_fee, is_credential_verified) VALUES ($1, $2, $3, $4)`,
+		doctorID, doctorUserID, 100000, true)
 	require.NoError(t, err)
 
 	// Seed Availability Slot
